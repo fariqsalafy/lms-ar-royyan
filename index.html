@@ -1,583 +1,1013 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>PMS Ar Royyan — Santri</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<style>
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;padding:0;overscroll-behavior-y:none}
-  body{font-family:'Inter',system-ui,sans-serif;background:#f8fafc;color:#0f172a;line-height:1.5;padding-bottom:80px}
-  .page{display:none;animation:fade .2s ease}
-  .page.active{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:1rem;padding:1rem;margin-bottom:.75rem;transition:box-shadow .15s}
-  .card:active{box-shadow:0 4px 12px rgba(0,0,0,.06)}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.75rem;font-size:.875rem;font-weight:600;border:none;cursor:pointer;width:100%}
-  .btn-primary{background:#1e3a5f;color:#fff}
-  .btn-success{background:#16a34a;color:#fff}
-  .btn-outline{background:#fff;color:#334155;border:1px solid #cbd5e1}
-  .badge{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.2rem .5rem;border-radius:9999px;display:inline-block}
-  .badge-hadir{background:#dcfce7;color:#166534}
-  .badge-izin{background:#fef9c3;color:#854d0e}
-  .badge-sakit{background:#fef3c7;color:#92400e}
-  .badge-alpa{background:#fee2e2;color:#991b1b}
-  .badge-lunas{background:#dcfce7;color:#166534}
-  .badge-menunggu{background:#e0e7ff;color:#3730a3}
-  .badge-belum{background:#f1f5f9;color:#475569}
-  .input{width:100%;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem .875rem;font-size:.875rem;background:#fff}
-  .input:focus{outline:none;border-color:#1e3a5f;box-shadow:0 0 0 3px rgba(30,58,95,.12)}
-  .tabbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:.5rem 0 calc(.5rem + env(safe-area-inset-bottom));z-index:50;backdrop-filter:blur(8px);background:rgba(255,255,255,.92)}
-  .tab-item{display:flex;flex-direction:column;align-items:center;gap:.25rem;font-size:.65rem;color:#94a3b8;padding:.25rem .5rem;border-radius:.75rem;cursor:pointer;border:none;background:none;min-width:60px}
-  .tab-item.active{color:#1e3a5f;font-weight:600}
-  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(100px);background:#1e3a5f;color:#fff;padding:.75rem 1.25rem;border-radius:.75rem;font-size:.875rem;z-index:100;opacity:0;transition:all .25s ease;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.2)}
-  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-  .sheett{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:70;display:none;align-items:flex-end;justify-content:center}
-  .sheett.open{display:flex}
-  .sheet{background:#fff;border-radius:1.25rem 1.25rem 0 0;padding:1.25rem;width:100%;max-height:85vh;overflow-y:auto;animation:slideUp .25s ease}
-  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-  .time-pill{font-variant-numeric:tabular-nums;font-weight:700;color:#64748b;font-size:.8rem}
-  .section-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin:1rem 0 .5rem;padding:0 .25rem}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LMS Pesantren Mahasiswa Ar Royyan</title>
+  
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            emerald: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            },
+            amber: {
+              500: '#f59e0b',
+              600: '#d97706',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; overscroll-behavior-y: none; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.25s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .badge { display: inline-flex; align-items: center; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
+    .badge-lunas { background-color: #dcfce7; color: #15803d; }
+    .badge-menunggu { background-color: #fef9c3; color: #a16207; }
+    .badge-belum { background-color: #fee2e2; color: #b91c1c; }
+    .badge-hadir { background-color: #d1fae5; color: #047857; }
+    .badge-izin { background-color: #e0f2fe; color: #0369a1; }
+    .badge-sakit { background-color: #fef3c7; color: #b45309; }
+    .badge-alpa { background-color: #ffe4e6; color: #be123c; }
+  </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 pb-24 md:pb-8">
 
-<!-- LOGIN -->
-<div id="loginPage" class="page active min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1e3a5f] to-[#2c5282] p-4">
-  <div class="w-full max-w-sm">
-    <div class="text-center mb-8">
-      <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg">🕌</div>
-      <h1 class="text-2xl font-bold text-white mb-1">PMS Ar Royyan</h1>
-      <p class="text-white/70 text-sm">Pesantren Mahasiswa Ar Royyan</p>
-    </div>
-    <form onsubmit="event.preventDefault();doLogin()" class="bg-white rounded-2xl p-6 shadow-2xl space-y-4">
-      <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1.5">NIS / Email</label>
-        <input id="loginEmail" type="text" class="input" placeholder="2025001" value="2025001"/>
+  <!-- TOP HEADER & ROLE SWITCHER -->
+  <header class="bg-emerald-900 text-white sticky top-0 z-40 shadow-md">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- Logo & Brand -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-700/80 border border-emerald-500/30 flex items-center justify-center shadow-inner">
+          <i data-lucide="book-open-check" class="w-6 h-6 text-emerald-200"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-base md:text-lg leading-tight text-emerald-50">LMS Ar Royyan</h1>
+          <p class="text-xs text-emerald-300 font-medium">Pesantren Mahasiswa</p>
+        </div>
       </div>
-      <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Password</label>
-        <input id="loginPass" type="password" class="input" placeholder="••••••••" value="santri"/>
-      </div>
-      <button type="submit" class="btn btn-primary">Masuk</button>
-    </form>
-    <div class="mt-6 flex gap-2">
-      <button onclick="fillLogin('2025001','santri');doLogin()" class="flex-1 bg-white/10 backdrop-blur text-white rounded-xl py-2.5 text-sm font-medium border border-white/20">Santri</button>
-      <button onclick="fillLogin('wali','wali');doLogin()" class="flex-1 bg-white/10 backdrop-blur text-white rounded-xl py-2.5 text-sm font-medium border border-white/20">Wali</button>
-    </div>
-  </div>
-</div>
 
-<!-- APP -->
-<div id="app" class="page">
-  <!-- TOP -->
-  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200 px-4 py-3">
-    <div class="flex items-center justify-between max-w-lg mx-auto">
-      <div>
-        <p class="text-xs text-slate-500">Assalamualaikum,</p>
-        <h1 id="headerName" class="text-base font-bold text-slate-800 leading-tight">Ahmad Zaki</h1>
-      </div>
-      <div class="flex items-center gap-2">
-        <button onclick="showToast('Notifikasi: Ujian FIQH besok')" class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center relative">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">2</span>
+      <!-- Role Switcher & Config Button -->
+      <div class="flex items-center space-x-2">
+        <!-- Role Dropdown -->
+        <div class="relative">
+          <select id="roleSelect" onchange="switchRole(this.value)" class="bg-emerald-800 border border-emerald-600/60 text-white text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer">
+            <option value="santri" selected>🎓 Santri: Ahmad Fauzi</option>
+            <option value="ustadz">👳 Ustadz: Ust. Abdullah</option>
+            <option value="admin">⚙️ Admin: Pengasuh</option>
+          </select>
+        </div>
+        
+        <!-- Supabase Status Pill -->
+        <button onclick="toggleConfigModal()" class="hidden md:flex items-center space-x-1.5 bg-emerald-950/60 border border-emerald-700/50 hover:bg-emerald-800 text-emerald-200 px-2.5 py-1.5 rounded-lg text-xs font-medium transition">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="connStatusText">Demo Mode</span>
         </button>
-        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">AZ</div>
       </div>
     </div>
   </header>
 
-  <!-- PAGES -->
-  <main class="max-w-lg mx-auto px-4 pt-4">
-
-    <!-- DASHBOARD -->
-    <div id="page-dashboard" class="page active">
-      <!-- Jadwal Hari Ini -->
-      <div class="section-title">📅 Jadwal Dirosah Hari Ini</div>
-      <div id="todaySchedule" class="space-y-2"></div>
-
-      <!-- Ringkasan -->
-      <div class="grid grid-cols-3 gap-2 mt-4">
-        <div class="card text-center py-3">
-          <p class="text-xl font-bold text-green-600" id="dashHadir">0</p>
-          <p class="text-xs text-slate-500">Hadir</p>
+  <!-- SUB HEADER BANNER FOR USER PROFILE -->
+  <div class="bg-emerald-800 text-white px-4 py-4 shadow-inner">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div id="userAvatar" class="w-12 h-12 rounded-full bg-amber-500 text-white font-extrabold flex items-center justify-center text-lg border-2 border-emerald-400 shadow">
+          AF
         </div>
-        <div class="card text-center py-3">
-          <p class="text-xl font-bold text-amber-600" id="dashIzin">0</p>
-          <p class="text-xs text-slate-500">Izin/Sakit</p>
+        <div>
+          <h2 id="userName" class="font-bold text-lg text-white">Ahmad Fauzi</h2>
+          <p id="userSub" class="text-xs text-emerald-200">NIM: 2026001 • Kamar Al-Farabi 04 • Angkatan 2026</p>
         </div>
-        <div class="card text-center py-3">
-          <p class="text-xl font-bold text-red-600" id="dashAlpa">0</p>
-          <p class="text-xs text-slate-500">Alpa</p>
+      </div>
+      <div class="hidden sm:block text-right">
+        <span class="inline-block bg-emerald-900/60 text-emerald-200 border border-emerald-700/60 rounded-lg px-3 py-1 text-xs font-semibold">
+          <i data-lucide="calendar" class="w-3.5 h-3.5 inline mr-1"></i> Semester Ganjil 2026/2027
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-5xl mx-auto px-4 py-5">
+
+    <!-- DESKTOP TOP NAV TABS (Hidden on mobile) -->
+    <div class="hidden md:flex items-center space-x-2 border-b border-slate-200 mb-6 pb-2">
+      <button onclick="switchTab('dashboard')" class="nav-tab-btn active px-4 py-2 rounded-lg text-sm font-semibold text-emerald-800 bg-emerald-100 flex items-center space-x-2">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i><span>Beranda</span>
+      </button>
+      <button onclick="switchTab('presensi')" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+        <i data-lucide="user-check" class="w-4 h-4"></i><span>Presensi</span>
+      </button>
+      <button onclick="switchTab('ujian')" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i><span>Ujian CBT</span>
+      </button>
+      <button onclick="switchTab('keuangan')" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+        <i data-lucide="credit-card" class="w-4 h-4"></i><span>Syahriyah</span>
+      </button>
+      <button onclick="switchTab('materi')" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+        <i data-lucide="book-open" class="w-4 h-4"></i><span>Dirosah & Kitab</span>
+      </button>
+      <button onclick="switchTab('akademik')" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+        <i data-lucide="graduation-cap" class="w-4 h-4"></i><span>KRS/KHS</span>
+      </button>
+      <button id="adminTabBtn" onclick="switchTab('adminPanel')" class="hidden nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 flex items-center space-x-2">
+        <i data-lucide="shield-alert" class="w-4 h-4"></i><span>Panel Kelola</span>
+      </button>
+    </div>
+
+    <!-- ==================== TAB 1: BERANDA (DASHBOARD) ==================== -->
+    <div id="tab-dashboard" class="tab-content active">
+      <!-- Quick Stats Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+            <i data-lucide="user-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Kehadiran</p>
+            <h3 class="text-lg font-extrabold text-slate-800">96.5%</h3>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+            <i data-lucide="wallet" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Syahriyah</p>
+            <span id="dashPayBadge" class="badge badge-lunas">LUNAS</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+            <i data-lucide="clock" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Ujian Aktif</p>
+            <h3 class="text-lg font-extrabold text-slate-800">1 Ujian</h3>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+            <i data-lucide="book" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Materi Baru</p>
+            <h3 class="text-lg font-extrabold text-slate-800">4 File</h3>
+          </div>
         </div>
       </div>
 
-      <!-- Ujian -->
-      <div class="section-title">🧪 Ujian Mendatang</div>
-      <div id="upcomingExams" class="space-y-2"></div>
-
-      <!-- Keuangan -->
-      <div class="section-title">💰 Keuangan</div>
-      <div id="financeSummary" class="space-y-2"></div>
-
-      <!-- Materi -->
-      <div class="section-title">📚 Materi Terbaru</div>
-      <div id="recentMaterials" class="space-y-2"></div>
-
-      <div class="h-6"></div>
-    </div>
-
-    <!-- PRESENSI -->
-    <div id="page-presensi" class="page">
-      <div class="section-title">✅ Absensi Hari Ini</div>
-      <div id="presensiList" class="space-y-2"></div>
-      <div class="mt-4">
-        <button onclick="submitPresensi()" class="btn btn-success">📤 Kirim Presensi</button>
+      <!-- Quick Action Cards -->
+      <div class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white rounded-2xl p-5 mb-6 shadow-md relative overflow-hidden">
+        <div class="relative z-10">
+          <span class="bg-emerald-700/80 text-emerald-200 text-xs font-semibold px-2.5 py-1 rounded-md mb-2 inline-block">
+            📌 Dirosah Subuh Hari Ini
+          </span>
+          <h3 class="text-xl font-bold">Kitab Fathul Qarib (Fiqih Ibadah)</h3>
+          <p class="text-xs text-emerald-200 mt-1 mb-4">Pengampu: Ust. Dr. Abdullah, M.Ag • Waktu: 05.30 - 06.30 WIB</p>
+          
+          <div class="flex flex-wrap gap-2">
+            <button onclick="doSelfAttendance()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center space-x-1.5 transition">
+              <i data-lucide="qr-code" class="w-4 h-4"></i><span>Presensi Masuk Sekarang</span>
+            </button>
+            <button onclick="switchTab('materi')" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1.5">
+              <i data-lucide="file-text" class="w-4 h-4"></i><span>Buka Kitab / Materi</span>
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="section-title mt-6">📈 Riwayat Minggu Ini</div>
-      <div id="weeklyPresensi" class="space-y-2"></div>
-      <div class="h-6"></div>
-    </div>
 
-    <!-- JADWAL -->
-    <div id="page-jadwal" class="page">
-      <div class="section-title">📅 Jadwal Minggu Ini</div>
-      <div id="weeklySchedule" class="space-y-3"></div>
-      <div class="h-6"></div>
-    </div>
+      <!-- Schedule & Announcements Grid -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Jadwal Dirosah Hari Ini -->
+        <div class="md:col-span-2 bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-800 text-base flex items-center space-x-2">
+              <i data-lucide="calendar" class="w-5 h-5 text-emerald-700"></i>
+              <span>Jadwal Dirosah Pekan Ini</span>
+            </h3>
+            <span class="text-xs text-slate-500 font-medium">Senin - Sabtu</span>
+          </div>
 
-    <!-- UJIAN -->
-    <div id="page-ujian" class="page">
-      <div id="examList" class="space-y-3"></div>
-      <div id="activeExam" class="hidden">
-        <div class="card">
-          <div class="flex items-center justify-between mb-3">
-            <div>
-              <h3 id="examTitle" class="font-bold text-slate-800">UTS FIQH - Ibadah</h3>
-              <p id="examSub" class="text-xs text-slate-500">Soal 1 dari 5 • 90 Menit</p>
+          <div class="space-y-3">
+            <!-- Schedule item 1 -->
+            <div class="p-3.5 bg-slate-50 hover:bg-emerald-50/50 rounded-xl border border-slate-200 transition flex items-start justify-between">
+              <div class="flex space-x-3">
+                <div class="text-center bg-emerald-100 text-emerald-800 px-2.5 py-1.5 rounded-lg shrink-0">
+                  <span class="block text-xs font-bold uppercase">Senin</span>
+                  <span class="text-xs font-extrabold">05:30</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-800 text-sm">Fathul Qarib (Fiqih)</h4>
+                  <p class="text-xs text-slate-500">Ust. Dr. Abdullah, M.Ag • Ruang Utama Pesantren</p>
+                </div>
+              </div>
+              <span class="badge badge-hadir">Hadir</span>
             </div>
+
+            <!-- Schedule item 2 -->
+            <div class="p-3.5 bg-slate-50 hover:bg-emerald-50/50 rounded-xl border border-slate-200 transition flex items-start justify-between">
+              <div class="flex space-x-3">
+                <div class="text-center bg-emerald-100 text-emerald-800 px-2.5 py-1.5 rounded-lg shrink-0">
+                  <span class="block text-xs font-bold uppercase">Selasa</span>
+                  <span class="text-xs font-extrabold">19:30</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-800 text-sm">Riyadhus Shalihin (Hadits)</h4>
+                  <p class="text-xs text-slate-500">Ust. Mahmud Syukri • Aula Lantai 2</p>
+                </div>
+              </div>
+              <span class="badge badge-hadir">Hadir</span>
+            </div>
+
+            <!-- Schedule item 3 -->
+            <div class="p-3.5 bg-slate-50 hover:bg-emerald-50/50 rounded-xl border border-slate-200 transition flex items-start justify-between">
+              <div class="flex space-x-3">
+                <div class="text-center bg-amber-100 text-amber-800 px-2.5 py-1.5 rounded-lg shrink-0">
+                  <span class="block text-xs font-bold uppercase">Rabu</span>
+                  <span class="text-xs font-extrabold">05:30</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-800 text-sm">Matan Al-Ajurrumiyyah (Nahwu)</h4>
+                  <p class="text-xs text-slate-500">Ust. Ahmad Hidayat, M.Pd • Ruang Kelas A</p>
+                </div>
+              </div>
+              <span class="badge badge-menunggu">Mendatang</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Announcements & Information Sidebar -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center space-x-2">
+              <i data-lucide="bell" class="w-5 h-5 text-amber-600"></i>
+              <span>Pengumuman</span>
+            </h3>
+            
+            <div class="space-y-3">
+              <div class="p-3 bg-amber-50 rounded-xl border border-amber-200">
+                <h4 class="font-bold text-amber-900 text-xs">Ujian Tengah Dirosah (UTD)</h4>
+                <p class="text-xs text-amber-800 mt-1">Ujian Tengah Dirosah akan dilaksanakan serentak berbasis CBT mulai Senin depan.</p>
+              </div>
+
+              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <h4 class="font-bold text-slate-800 text-xs">Batas Pembayaran Syahriyah</h4>
+                <p class="text-xs text-slate-600 mt-1">Pembayaran Syahriyah bulan Agustus diharapkan sebelum tanggal 10 tiap bulannya.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <button onclick="switchTab('keuangan')" class="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2.5 rounded-xl transition">
+              Upload Bukti Syahriyah
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: PRESENSI ==================== -->
+    <div id="tab-presensi" class="tab-content">
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mb-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+          <div>
+            <h3 class="font-bold text-slate-800 text-lg">Rekap Presensi Kehadiran</h3>
+            <p class="text-xs text-slate-500">Monitoring kehadiran dirosah santri Ar Royyan</p>
+          </div>
+
+          <button onclick="doSelfAttendance()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center justify-center space-x-2">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            <span>Presensi Mandiri</span>
+          </button>
+        </div>
+
+        <!-- Presensi Stats -->
+        <div class="grid grid-cols-4 gap-2 text-center mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
+          <div>
+            <span class="block text-lg font-extrabold text-emerald-700">24</span>
+            <span class="text-[11px] font-semibold text-slate-500">Hadir</span>
+          </div>
+          <div>
+            <span class="block text-lg font-extrabold text-blue-600">1</span>
+            <span class="text-[11px] font-semibold text-slate-500">Izin</span>
+          </div>
+          <div>
+            <span class="block text-lg font-extrabold text-amber-600">0</span>
+            <span class="text-[11px] font-semibold text-slate-500">Sakit</span>
+          </div>
+          <div>
+            <span class="block text-lg font-extrabold text-rose-600">0</span>
+            <span class="text-[11px] font-semibold text-slate-500">Alpa</span>
+          </div>
+        </div>
+
+        <!-- Attendance History Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[11px]">
+              <tr>
+                <th class="p-3 rounded-l-lg">Tanggal</th>
+                <th class="p-3">Mata Dirosah</th>
+                <th class="p-3">Waktu</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 rounded-r-lg">Keterangan</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody" class="divide-y divide-slate-100">
+              <tr>
+                <td class="p-3 font-semibold">24 Aug 2026</td>
+                <td class="p-3 font-bold text-slate-800">Fathul Qarib (Fiqih)</td>
+                <td class="p-3 text-slate-500">05:30 WIB</td>
+                <td class="p-3"><span class="badge badge-hadir">HADIR</span></td>
+                <td class="p-3 text-slate-500">Presensi via QR App</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">23 Aug 2026</td>
+                <td class="p-3 font-bold text-slate-800">Riyadhus Shalihin (Hadits)</td>
+                <td class="p-3 text-slate-500">19:30 WIB</td>
+                <td class="p-3"><span class="badge badge-hadir">HADIR</span></td>
+                <td class="p-3 text-slate-500">Presensi Mandiri</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">21 Aug 2026</td>
+                <td class="p-3 font-bold text-slate-800">Matan Al-Ajurrumiyyah (Nahwu)</td>
+                <td class="p-3 text-slate-500">05:30 WIB</td>
+                <td class="p-3"><span class="badge badge-izin">IZIN</span></td>
+                <td class="p-3 text-slate-500">Tugas Kuliah Kampus</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 3: UJIAN CBT ==================== -->
+    <div id="tab-ujian" class="tab-content">
+      <div id="cbtListView" class="space-y-4">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <h3 class="font-bold text-slate-800 text-lg">Ujian Online CBT (Computer Based Test)</h3>
+            <p class="text-xs text-slate-500">Pelaksanaan ujian evaluasi dirosah santri Ar Royyan</p>
+          </div>
+          <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-xs font-bold">1 Ujian Ready</span>
+        </div>
+
+        <!-- Available Exam Card 1 -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-emerald-500 transition">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-start space-x-3">
+              <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center shrink-0">
+                <i data-lucide="file-check-2" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Fiqih Ibadah</span>
+                <h4 class="font-bold text-slate-800 text-base mt-1">Ujian Evaluasi Fathul Qarib — Thaharah & Shalat</h4>
+                <p class="text-xs text-slate-500 mt-1">Durasi: 60 Menit • 5 Soal Pilihan Ganda & Esai • Passing Grade: 70</p>
+              </div>
+            </div>
+
+            <button onclick="startCBTExam()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-extrabold px-5 py-3 rounded-xl shadow-md transition flex items-center justify-center space-x-2 shrink-0">
+              <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+              <span>Kerjakan Ujian</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Completed Exam Card 2 -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm opacity-90">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-start space-x-3">
+              <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 font-bold flex items-center justify-center shrink-0">
+                <i data-lucide="check-circle" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Nahwu Dirosah</span>
+                <h4 class="font-bold text-slate-800 text-base mt-1">Ujian Matan Al-Ajurrumiyyah (Bab Fi'il)</h4>
+                <p class="text-xs text-slate-500 mt-1">Selesai pada: 15 Aug 2026 • Durasi: 45 Menit</p>
+              </div>
+            </div>
+
             <div class="text-right">
-              <p class="text-xs text-slate-500">Sisa Waktu</p>
-              <p id="examTimer" class="text-lg font-bold text-[#1e3a5f] tabular-nums">15:00</p>
+              <span class="text-xs text-slate-500 font-semibold block">Nilai Akhir:</span>
+              <span class="text-xl font-extrabold text-emerald-700">92.00 / 100</span>
+              <span class="badge badge-hadir block mt-1">LULUS (MUMTAZ)</span>
             </div>
           </div>
-          <div class="h-2 bg-slate-200 rounded-full overflow-hidden mb-4">
-            <div id="examProgress" class="h-full bg-blue-600 rounded-full transition-all" style="width:20%"></div>
-          </div>
-          <div id="questionBox" class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <p id="questionText" class="font-medium text-slate-800 mb-3"></p>
-            <div id="optionsBox" class="space-y-2"></div>
-          </div>
-          <div class="flex gap-2 mt-4">
-            <button onclick="prevQ()" class="flex-1 btn btn-outline">←</button>
-            <button onclick="nextQ()" class="flex-1 btn btn-primary">→</button>
-          </div>
-        </div>
-        <button onclick="submitExam()" class="btn btn-success mt-3">📤 Kirim Ujian</button>
-      </div>
-      <div class="h-6"></div>
-    </div>
-
-    <!-- KEUANGAN -->
-    <div id="page-keuangan" class="page">
-      <div class="section-title">💰 Tagihan Saya</div>
-      <div id="billsList" class="space-y-2"></div>
-      <div class="section-title mt-6">💳 Riwayat Pembayaran</div>
-      <div id="payHistory" class="space-y-2"></div>
-      <div class="h-6"></div>
-    </div>
-
-    <!-- MATERI -->
-    <div id="page-materi" class="page">
-      <div class="section-title">📚 Materi</div>
-      <div id="materialsList" class="space-y-2"></div>
-      <div class="section-title mt-6">📝 Tugas</div>
-      <div id="assignmentsList" class="space-y-2"></div>
-      <div class="h-6"></div>
-    </div>
-
-    <!-- PROFIL -->
-    <div id="page-profil" class="page">
-      <div class="card flex items-center gap-3">
-        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl">AZ</div>
-        <div class="flex-1">
-          <p id="profileName" class="font-bold text-slate-800">Ahmad Zaki</p>
-          <p class="text-xs text-slate-500">NIS: 2025001 • Kelas A</p>
-          <p class="text-xs text-slate-500">Tahfidz 1 • Ganjil 2025/26</p>
         </div>
       </div>
-      <div class="card">
-        <div class="section-title">📊 Ringkasan Akademik</div>
-        <div class="grid grid-cols-2 gap-3 text-center">
-          <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">IPS</p><p class="text-2xl font-bold text-green-600">3.75</p></div>
-          <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">IPK</p><p class="text-2xl font-bold text-blue-600">3.82</p></div>
-          <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Presensi</p><p class="text-2xl font-bold text-amber-600">92%</p></div>
-          <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Peringkat</p><p class="text-2xl font-bold text-purple-600">#3</p></div>
+
+      <!-- CBT SIMULATOR ACTIVE EXAM VIEW (Hidden by default) -->
+      <div id="cbtExamActiveView" class="hidden bg-white rounded-2xl border border-slate-300 shadow-lg p-6">
+        <!-- Exam Header -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-5">
+          <div>
+            <span class="text-xs font-bold text-emerald-700 uppercase">CBT Exam Mode</span>
+            <h3 class="font-extrabold text-slate-800 text-lg">Ujian Fathul Qarib (Thaharah & Shalat)</h3>
+          </div>
+          <div class="bg-rose-50 border border-rose-200 text-rose-700 px-3.5 py-1.5 rounded-xl flex items-center space-x-2">
+            <i data-lucide="timer" class="w-4 h-4 animate-spin"></i>
+            <span id="cbtTimer" class="font-mono font-extrabold text-sm">59:45</span>
+          </div>
+        </div>
+
+        <!-- Question Body -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <span id="cbtQuestionNumber" class="text-xs font-bold bg-slate-100 text-slate-700 px-3 py-1 rounded-lg">Soal 1 dari 5</span>
+            <span class="text-xs text-slate-400 font-medium">Bobot: 20 Poin</span>
+          </div>
+
+          <p id="cbtQuestionText" class="text-sm md:text-base font-semibold text-slate-800 mb-4 leading-relaxed">
+            Apakah hukum wudhu bagi orang yang hendak melaksanakan Shalat Fardhu menurut kesepakatan fuqaha dalam Fathul Qarib?
+          </p>
+
+          <!-- Options List -->
+          <div id="cbtOptionsContainer" class="space-y-2.5">
+            <!-- Dynamic Options via JS -->
+          </div>
+        </div>
+
+        <!-- Exam Controls Footer -->
+        <div class="flex items-center justify-between border-t border-slate-200 pt-4">
+          <button id="prevBtn" onclick="prevQuestion()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center space-x-1">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i><span>Sebelumnya</span>
+          </button>
+          
+          <button id="nextBtn" onclick="nextQuestion()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition flex items-center space-x-1">
+            <span>Selanjutnya</span><i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+
+          <button id="submitExamBtn" onclick="finishCBTExam()" class="hidden bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl shadow transition">
+            Submit & Selesaikan Ujian
+          </button>
         </div>
       </div>
-      <button onclick="doLogout()" class="btn btn-outline text-red-600 border-red-200 mt-4">🚪 Keluar</button>
-      <div class="h-6"></div>
+    </div>
+
+    <!-- ==================== TAB 4: KEUANGAN (SYAHRIYAH) ==================== -->
+    <div id="tab-keuangan" class="tab-content">
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Main Payment Status -->
+        <div class="md:col-span-2 bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-slate-800 text-lg">Tagihan Syahriyah & Iuran</h3>
+              <p class="text-xs text-slate-500">Kelola dan upload bukti pembayaran bulanan santri</p>
+            </div>
+            <button onclick="openPaymentModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow flex items-center space-x-1.5">
+              <i data-lucide="upload-cloud" class="w-4 h-4"></i><span>Upload Bukti</span>
+            </button>
+          </div>
+
+          <!-- History Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[11px]">
+                <tr>
+                  <th class="p-3 rounded-l-lg">Bulan / Periode</th>
+                  <th class="p-3">Nominal</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 rounded-r-lg">Tgl Verifikasi</th>
+                </tr>
+              </thead>
+              <tbody id="paymentTableBody" class="divide-y divide-slate-100">
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">Agustus 2026</td>
+                  <td class="p-3 font-semibold text-slate-700">Rp 350.000</td>
+                  <td class="p-3"><span id="payAgustusBadge" class="badge badge-lunas">LUNAS</span></td>
+                  <td class="p-3 text-slate-500">05 Aug 2026</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">Juli 2026</td>
+                  <td class="p-3 font-semibold text-slate-700">Rp 350.000</td>
+                  <td class="p-3"><span class="badge badge-lunas">LUNAS</span></td>
+                  <td class="p-3 text-slate-500">03 Jul 2026</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bank Account Info Sidebar -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center space-x-2">
+            <i data-lucide="landmark" class="w-5 h-5 text-emerald-700"></i>
+            <span>Rekening Pembayaran</span>
+          </h3>
+
+          <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-3">
+            <div>
+              <span class="text-[11px] text-emerald-800 font-semibold block uppercase">Bank Syariah Indonesia (BSI)</span>
+              <span class="font-mono font-extrabold text-lg text-emerald-950 block">7123-4567-8901</span>
+              <span class="text-xs text-slate-600 block">a.n. Pesantren Mahasiswa Ar Royyan</span>
+            </div>
+
+            <div class="pt-2 border-t border-emerald-200/80">
+              <span class="text-[11px] text-slate-500 block">Nominal Syahriyah:</span>
+              <span class="text-sm font-extrabold text-slate-800">Rp 350.000 / Bulan</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 5: DIROSAH & MATERI ==================== -->
+    <div id="tab-materi" class="tab-content">
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mb-6">
+        <h3 class="font-bold text-slate-800 text-lg mb-1">Materi Dirosah & PDF Kitab</h3>
+        <p class="text-xs text-slate-500 mb-4">Unduh dan pelajari materi dirosah santri Ar Royyan</p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <!-- Material Item 1 -->
+          <div class="p-4 rounded-xl border border-slate-200 hover:border-emerald-500 transition flex items-start space-x-3">
+            <div class="w-10 h-10 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+              <i data-lucide="file-text" class="w-5 h-5"></i>
+            </div>
+            <div class="flex-1">
+              <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded uppercase">Fiqih • PDF</span>
+              <h4 class="font-bold text-slate-800 text-sm mt-1">Kitab Fathul Qarib — Bab Thaharah & Shalat.pdf</h4>
+              <p class="text-xs text-slate-500 mt-1">Diunggah oleh Ust. Dr. Abdullah • Ukuran: 2.4 MB</p>
+              <a href="#" onclick="alert('Simulasi mengunduh PDF Kitab Fathul Qarib')" class="inline-flex items-center space-x-1 text-xs font-bold text-emerald-700 hover:underline mt-2">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i><span>Unduh Kitab PDF</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Material Item 2 -->
+          <div class="p-4 rounded-xl border border-slate-200 hover:border-emerald-500 transition flex items-start space-x-3">
+            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+              <i data-lucide="headphones" class="w-5 h-5"></i>
+            </div>
+            <div class="flex-1">
+              <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded uppercase">Nahwu • Audio</span>
+              <h4 class="font-bold text-slate-800 text-sm mt-1">Rekaman Syarah Al-Ajurrumiyyah (Bab Fi'il).mp3</h4>
+              <p class="text-xs text-slate-500 mt-1">Diunggah oleh Ust. Ahmad Hidayat • Durasi: 42 Menit</p>
+              <audio controls class="w-full mt-2 h-8">
+                <source src="" type="audio/mpeg">
+                Browser Anda tidak mendukung pemutar audio.
+              </audio>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 6: AKADEMIK (KRS/KHS) ==================== -->
+    <div id="tab-akademik" class="tab-content">
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+        <h3 class="font-bold text-slate-800 text-lg mb-1">Kartu Hasil Studi (KHS) Dirosah</h3>
+        <p class="text-xs text-slate-500 mb-5">Laporan hasil evaluasi belajar dirosah per semester</p>
+
+        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl mb-5 flex items-center justify-between">
+          <div>
+            <span class="text-xs text-emerald-800 font-semibold block">Indeks Prestasi Dirosah (IPD):</span>
+            <span class="text-2xl font-extrabold text-emerald-950">3.85 / 4.00</span>
+          </div>
+          <span class="badge badge-lunas text-xs px-3 py-1">PREDIKAT: MUMTAZ</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[11px]">
+              <tr>
+                <th class="p-3 rounded-l-lg">Kode</th>
+                <th class="p-3">Mata Dirosah</th>
+                <th class="p-3">SKS</th>
+                <th class="p-3">Nilai Formatif</th>
+                <th class="p-3">Nilai CBT</th>
+                <th class="p-3 rounded-r-lg">Nilai Akhir</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr>
+                <td class="p-3 font-semibold">DIR-01</td>
+                <td class="p-3 font-bold text-slate-800">Fiqih (Fathul Qarib)</td>
+                <td class="p-3">3</td>
+                <td class="p-3 font-semibold">90.00</td>
+                <td class="p-3 font-semibold">88.00</td>
+                <td class="p-3 font-extrabold text-emerald-700">A (Mumtaz)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">DIR-02</td>
+                <td class="p-3 font-bold text-slate-800">Hadits (Riyadhus Shalihin)</td>
+                <td class="p-3">2</td>
+                <td class="p-3 font-semibold">95.00</td>
+                <td class="p-3 font-semibold">92.00</td>
+                <td class="p-3 font-extrabold text-emerald-700">A (Mumtaz)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">DIR-03</td>
+                <td class="p-3 font-bold text-slate-800">Nahwu (Al-Ajurrumiyyah)</td>
+                <td class="p-3">2</td>
+                <td class="p-3 font-semibold">85.00</td>
+                <td class="p-3 font-semibold">82.00</td>
+                <td class="p-3 font-extrabold text-emerald-700">A- (Jayyid Jiddan)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 7: PANEL KELOLA ADMIN & USTADZ ==================== -->
+    <div id="tab-adminPanel" class="tab-content">
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mb-6">
+        <h3 class="font-bold text-slate-800 text-lg mb-1">Panel Kelola Verifikasi Admin</h3>
+        <p class="text-xs text-slate-500 mb-5">Verifikasi pembayaran syahriyah santri yang di-upload</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[11px]">
+              <tr>
+                <th class="p-3 rounded-l-lg">Santri</th>
+                <th class="p-3">Bulan</th>
+                <th class="p-3">Nominal</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 rounded-r-lg text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="adminPayTableBody" class="divide-y divide-slate-100">
+              <tr>
+                <td class="p-3 font-bold text-slate-800">Ahmad Fauzi (2026001)</td>
+                <td class="p-3 font-semibold">Agustus 2026</td>
+                <td class="p-3 font-semibold">Rp 350.000</td>
+                <td class="p-3"><span id="adminPayStatusBadge" class="badge badge-menunggu">MENUNGGU VERIFIKASI</span></td>
+                <td class="p-3 text-right space-x-1">
+                  <button onclick="approvePayment()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3 py-1.5 rounded-lg text-[11px]">Approve</button>
+                  <button onclick="rejectPayment()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-lg text-[11px]">Tolak</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
   </main>
 
-  <!-- BOTTOM TAB BAR -->
-  <nav class="tabbar" id="tabbar">
-    <button class="tab-item active" onclick="switchTab('dashboard')">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      <span>Dashboard</span>
-    </button>
-    <button class="tab-item" onclick="switchTab('presensi')">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-      <span>Absensi</span>
-    </button>
-    <button class="tab-item" onclick="switchTab('ujian')">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      <span>Ujian</span>
-    </button>
-    <button class="tab-item" onclick="switchTab('materi')">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      <span>Materi</span>
-    </button>
-    <button class="tab-item" onclick="switchTab('profil')">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Profil</span>
-    </button>
+  <!-- MOBILE BOTTOM NAVIGATION BAR -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-2 py-1.5 z-40 shadow-lg">
+    <div class="grid grid-cols-5 text-center">
+      <button onclick="switchTab('dashboard')" class="mobile-nav-btn active text-emerald-800 py-1 flex flex-col items-center">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+        <span class="text-[10px] font-semibold mt-0.5">Beranda</span>
+      </button>
+      <button onclick="switchTab('presensi')" class="mobile-nav-btn text-slate-500 py-1 flex flex-col items-center">
+        <i data-lucide="user-check" class="w-5 h-5"></i>
+        <span class="text-[10px] font-semibold mt-0.5">Presensi</span>
+      </button>
+      <button onclick="switchTab('ujian')" class="mobile-nav-btn text-slate-500 py-1 flex flex-col items-center">
+        <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
+        <span class="text-[10px] font-semibold mt-0.5">Ujian CBT</span>
+      </button>
+      <button onclick="switchTab('keuangan')" class="mobile-nav-btn text-slate-500 py-1 flex flex-col items-center">
+        <i data-lucide="credit-card" class="w-5 h-5"></i>
+        <span class="text-[10px] font-semibold mt-0.5">Syahriyah</span>
+      </button>
+      <button onclick="switchTab('materi')" class="mobile-nav-btn text-slate-500 py-1 flex flex-col items-center">
+        <i data-lucide="book-open" class="w-5 h-5"></i>
+        <span class="text-[10px] font-semibold mt-0.5">Dirosah</span>
+      </button>
+    </div>
   </nav>
-</div>
 
-<!-- EXAM SHEET -->
-<div id="examSheet" class="sheett" onclick="if(event.target===this)closeExam()">
-  <div class="sheet">
-    <div class="flex items-center justify-between mb-4">
-      <h3 id="sheetExamTitle" class="font-bold text-slate-800">UTS FIQH - Ibadah</h3>
-      <button onclick="closeExam()" class="text-slate-400 text-xl leading-none">✕</button>
-    </div>
-    <div class="mb-4">
-      <div class="flex justify-between text-xs text-slate-500 mb-1">
-        <span id="sheetExamInfo">Soal 1 dari 5</span>
-        <span id="sheetExamTimer" class="font-bold text-[#1e3a5f] tabular-nums">15:00</span>
+  <!-- UPLOAD PAYMENT MODAL -->
+  <div id="paymentModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl animate-fadeIn">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <h3 class="font-bold text-slate-800 text-base">Upload Bukti Transfer Syahriyah</h3>
+        <button onclick="closePaymentModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      <div class="h-2 bg-slate-200 rounded-full overflow-hidden"><div id="sheetExamProgress" class="h-full bg-blue-600 rounded-full transition-all" style="width:20%"></div></div>
-    </div>
-    <div id="sheetQuestionBox" class="p-4 bg-slate-50 rounded-xl border border-slate-200 mb-4">
-      <p id="sheetQuestionText" class="font-medium text-slate-800 mb-3"></p>
-      <div id="sheetOptionsBox" class="space-y-2"></div>
-    </div>
-    <div class="flex gap-2">
-      <button onclick="sheetPrev()" class="flex-1 btn btn-outline">← Sebelum</button>
-      <button onclick="sheetNext()" class="flex-1 btn btn-primary">Selanjutnya →</button>
+
+      <form onsubmit="submitPayment(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Periode Bulan</label>
+          <select id="payMonth" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            <option value="Agustus 2026">Agustus 2026 (Rp 350.000)</option>
+            <option value="September 2026">September 2026 (Rp 350.000)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Upload Foto / Bukti Struk Transfer</label>
+          <input type="file" accept="image/*" required class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-slate-50">
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-xs shadow transition">
+            Kirim Bukti Pembayaran
+          </button>
+        </div>
+      </form>
     </div>
   </div>
-</div>
 
-<!-- TOAST -->
-<div id="toast" class="toast"></div>
-
-<script>
-const state={
-  user:null,
-  tab:'dashboard',
-  currentExam:null,
-  qIndex:0,
-  answers:{},
-  examTime:15*60,
-  examTimer:null,
-  // santri view
-  schedule:[
-    {time:'07:00',end:'08:30',matpel:'FIQH - Thoharah',ustadz:'Ustadz Abdullah',room:'Ruang A1',hadir:true},
-    {time:'08:45',end:'10:15',matpel:'ARAB - Nahwu',ustadz:'Ustadzah Fatimah',room:'Ruang A2',hadir:true},
-    {time:'10:30',end:'12:00',matpel:'TAHFIDZ - Juz 30',ustadz:'Ustadz Muhammad',room:'Halaqah 1',hadir:false},
-  ],
-  presensiToday:[
-    {time:'07:00',matpel:'FIQH - Thoharah',status:'hadir',ket:''},
-    {time:'08:45',matpel:'ARAB - Nahwu',status:'hadir',ket:''},
-    {time:'10:30',matpel:'TAHFIDZ - Juz 30',status:'belum',ket:''},
-  ],
-  weekly:[
-    {day:'Sen',hadir:true},{day:'Sel',hadir:true},{day:'Rab',hadir:true},{day:'Kam',hadir:false},{day:'Jum',hadir:true}
-  ],
-  exams:[
-    {id:1,title:'UTS FIQH - Ibadah',matpel:'FIQH',soal:5,waktu:'90 menit',mulai:'27 Jan 09:00',status:'aktif'},
-    {id:2,title:'UAS TAHFIDZ Juz 30',matpel:'TAHFIDZ',soal:10,waktu:'120 menit',mulai:'03 Feb 08:00',status:'belum'},
-  ],
-  bills:[
-    {jenis:'SPP',periode:'Januari 2025',nominal:500000,jatuh:'31 Jan 2025',status:'menunggu'},
-    {jenis:'Seragam',periode:'2024/2025',nominal:350000,jatuh:'15 Jan 2025',status:'belum_bayar'},
-    {jenis:'Kegiatan',periode:'Maulid',nominal:150000,jatuh:'20 Jan 2025',status:'lunas'},
-  ],
-  payments:[
-    {jenis:'SPP',periode:'Desember 2024',nominal:500000,tgl:'02 Jan 2025',status:'lunas'},
-    {jenis:'Kegiatan',periode:'Hafalan',nominal:150000,tgl:'20 Des 2024',status:'lunas'},
-  ],
-  materials:[
-    {judul:'FIQH: Hukum Air Mutlak',jenis:'PDF',waktu:'2 jam lalu'},
-    {judul:'ARAB: Isim Mutsanna',jenis:'Video',waktu:'1 hari lalu'},
-  ],
-  assignments:[
-    {judul:'Latihan Isim Mutsanna',matpel:'ARAB',deadline:'28 Jan',nilai:null},
-    {judul:'Ringkasan Bab Thoharah',matpel:'FIQH',deadline:'30 Jan',nilai:85},
-  ],
-  questions:[
-    {text:'Apa syarat sah wudhu?',opts:['Beragama Islam','Berusia dewasa','Niat','Semua di atas'],ans:3},
-    {text:'Berapa kali membaca Bismillah sebelum wudhu?',opts:['0 kali','1 kali','2 kali','3 kali'],ans:0},
-    {text:'Apa yang membatalkan wudhu?',opts:['Tidur','Buang air','Berbicara','Semua di atas'],ans:3},
-    {text:'Sunnah membasuh muka berapa kali?',opts:['1x','2x','3x','Sesuai kemampuan'],ans:2},
-    {text:'Bacaan saat menyiram air ke kepala?',opts:['Al-Fatihah','Doa setelah wudhu','Tidak ada bacaan khusus','Ay Kursi'],ans:2},
-  ]
-};
-
-function fillLogin(u,p){document.getElementById('loginEmail').value=u;document.getElementById('loginPass').value=p}
-function doLogin(){
-  const e=document.getElementById('loginEmail').value||'2025001';
-  document.getElementById('loginPage').classList.remove('active');
-  document.getElementById('app').classList.add('active');
-  document.getElementById('headerName').textContent='Ahmad Zaki';
-  document.getElementById('profileName').textContent='Ahmad Zaki';
-  renderDashboard();
-  renderPresensi();
-  renderWeekly();
-  renderExams();
-  renderJadwal();
-  renderKeuangan();
-  renderMateri();
-  showToast('Selamat datang, Ahmad Zaki!');
-}
-function doLogout(){
-  document.getElementById('app').classList.remove('active');
-  document.getElementById('loginPage').classList.add('active');
-  document.getElementById('loginEmail').value='';
-  document.getElementById('loginPass').value='';
-}
-
-function switchTab(t){
-  state.tab=t;
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+t)?.classList.add('active');
-  document.querySelectorAll('.tab-item').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-item').forEach(b=>{if(b.textContent.trim().toLowerCase().includes(t||''))b.classList.add('active')});
-}
-
-function renderDashboard(){
-  const hadir=state.presensiToday.filter(p=>p.status==='hadir').length;
-  const izin=state.presensiToday.filter(p=>p.status==='izin'||p.status==='sakit').length;
-  const alpa=state.presensiToday.filter(p=>p.status==='alpa').length;
-  document.getElementById('dashHadir').textContent=hadir;
-  document.getElementById('dashIzin').textContent=izin;
-  document.getElementById('dashAlpa').textContent=alpa;
-
-  document.getElementById('todaySchedule').innerHTML=state.schedule.map(s=>`
-    <div class="card flex items-center gap-3">
-      <div class="text-center w-16 flex-shrink-0">
-        <p class="text-sm font-bold text-slate-800">${s.time}</p>
-        <p class="text-xs text-slate-400">${s.end}</p>
+  <!-- CONFIG SUPABASE MODAL -->
+  <div id="configModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <h3 class="font-bold text-slate-800 text-base">Konfigurasi Supabase DB</h3>
+        <button onclick="toggleConfigModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      <div class="flex-1 min-w-0">
-        <p class="font-semibold text-sm text-slate-800 truncate">${s.matpel}</p>
-        <p class="text-xs text-slate-500">${s.ustadz} • ${s.room}</p>
-      </div>
-      <span class="badge ${s.hadir?'badge-hadir':'badge-belum'}">${s.hadir?'Hadir':'Belum'}</span>
-    </div>
-  `).join('');
 
-  document.getElementById('upcomingExams').innerHTML=state.exams.filter(e=>e.status==='aktif').map(e=>`
-    <div class="card">
-      <div class="flex items-center justify-between mb-1">
-        <p class="font-semibold text-sm">${e.title}</p>
-        <span class="badge badge-berlangsung">Berlangsung</span>
-      </div>
-      <p class="text-xs text-slate-500">${e.soal} Soal • ${e.waktu} • Mulai ${e.mulai}</p>
-      <button onclick="openExam(${e.id})" class="btn btn-primary mt-3">📝 Kerjakan Ujian</button>
-    </div>
-  `).join('') || '<p class="text-sm text-slate-500 text-center py-4">Tidak ada ujian aktif</p>';
+      <p class="text-xs text-slate-500 mb-4">Secara bawaan aplikasi berjalan dalam <strong>Demo Mode</strong>. Masukkan URL & Key Supabase Anda untuk mengaktifkan koneksi live DB.</p>
 
-  document.getElementById('financeSummary').innerHTML=state.bills.filter(b=>b.status!=='lunas').map(b=>`
-    <div class="card flex items-center justify-between">
-      <div class="flex-1 min-w-0">
-        <p class="font-semibold text-sm text-slate-800">${b.jenis}</p>
-        <p class="text-xs text-slate-500">${b.periode} • Jatuh tempo ${b.jatuh}</p>
-      </div>
-      <div class="text-right flex-shrink-0 ml-3">
-        <p class="font-bold text-sm text-red-600">Rp ${(b.nominal).toLocaleString('id-ID')}</p>
-        <span class="badge ${b.status==='menunggu'?'badge-menunggu':'badge-belum'}">${b.status==='menunggu'?'Menunggu':'Belum'}</span>
-      </div>
-    </div>
-  `).join('') || '<p class="text-sm text-slate-500 text-center py-4">Semua tagihan lunas</p>';
-
-  document.getElementById('recentMaterials').innerHTML=state.materials.map(m=>`
-    <div class="card flex items-center justify-between">
-      <div class="flex-1 min-w-0">
-        <p class="font-medium text-sm text-slate-800 truncate">${m.judul}</p>
-        <p class="text-xs text-slate-500">${m.jenis} • ${m.waktu}</p>
-      </div>
-      <button class="btn-primary px-3 py-1.5 rounded-lg text-xs ml-3 flex-shrink-0">Buka</button>
-    </div>
-  `).join('');
-}
-
-function renderPresensi(){
-  document.getElementById('presensiList').innerHTML=state.presensiToday.map((p,i)=>`
-    <div class="card">
-      <div class="flex items-center justify-between mb-2">
+      <div class="space-y-3">
         <div>
-          <p class="font-medium text-sm text-slate-800">${p.matpel}</p>
-          <p class="text-xs text-slate-500">${p.time}</p>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">SUPABASE URL</label>
+          <input id="spUrl" type="url" placeholder="https://xyz.supabase.co" class="w-full text-xs p-2.5 rounded-xl border border-slate-300">
         </div>
-        <select onchange="updatePresensi(${i},'status',this.value)" class="input text-xs" style="width:auto;padding:.5rem .75rem">
-          <option value="hadir" ${p.status==='hadir'?'selected':''}>Hadir</option>
-          <option value="izin" ${p.status==='izin'?'selected':''}>Izin</option>
-          <option value="sakit" ${p.status==='sakit'?'selected':''}>Sakit</option>
-          <option value="alpa" ${p.status==='alpa'?'selected':''}>Alpa</option>
-          <option value="belum" ${p.status==='belum'?'selected':''}>Belum</option>
-        </select>
-      </div>
-      <input type="text" placeholder="Keterangan (opsional)" value="${p.ket}" onchange="updatePresensi(${i},'ket',this.value)" class="input text-xs" style="padding:.5rem .75rem"/>
-    </div>
-  `).join('');
+        <div>
+          <label class="block text-[11px] font-bold text-slate-700 mb-1">SUPABASE ANON KEY</label>
+          <input id="spKey" type="text" placeholder="eyJhY..." class="w-full text-xs p-2.5 rounded-xl border border-slate-300">
+        </div>
 
-  document.getElementById('weeklyPresensi').innerHTML=state.weekly.map((w,i)=>`
-    <div class="card flex items-center justify-between py-2.5">
-      <span class="text-sm font-medium">${w.day}</span>
-      <span class="badge ${w.hadir?'badge-hadir':'badge-alpa'}">${w.hadir?'Hadir':'Tidak Hadir'}</span>
-    </div>
-  `).join('');
-}
-
-function updatePresensi(i,f,v){state.presensiToday[i][f]=v;renderPresensi();renderDashboard();}
-function submitPresensi(){showToast('Presensi berhasil dikirim ✓');}
-
-function renderWeekly(){
-  document.getElementById('weeklySchedule').innerHTML=state.schedule.map(s=>`
-    <div class="card">
-      <div class="flex items-center gap-3 mb-2">
-        <div class="time-pill">${s.time}-${s.end}</div>
-        <span class="badge ${s.hadir?'badge-hadir':'badge-belum'}">${s.hadir?'Hadir':'Belum'}</span>
-      </div>
-      <p class="font-semibold text-sm text-slate-800">${s.matpel}</p>
-      <p class="text-xs text-slate-500">${s.ustadz} • ${s.room}</p>
-    </div>
-  `).join('');
-}
-
-function renderExams(){
-  document.getElementById('examList').innerHTML=state.exams.map(e=>`
-    <div class="card">
-      <div class="flex items-center justify-between mb-2">
-        <p class="font-bold text-slate-800">${e.title}</p>
-        <span class="badge ${e.status==='aktif'?'badge-berlangsung':'badge-belum'}">${e.status==='aktif'?'Berlangsung':'Belum Mulai'}</span>
-      </div>
-      <div class="text-xs text-slate-500 mb-3">${e.soal} Soal • ${e.waktu} • Mulai ${e.mulai}</div>
-      ${e.status==='aktif'?`<button onclick="openExam(${e.id})" class="btn btn-primary">📝 Kerjakan Ujian</button>`:`<button onclick="showToast('Ujian belum dimulai')" class="btn btn-outline" disabled>Belum Dimulai</button>`}
-    </div>
-  `).join('');
-}
-
-function openExam(id){
-  const e=state.exams.find(x=>x.id===id);if(!e)return;
-  state.currentExam=e;state.qIndex=0;state.answers={};state.examTime=e.waktu.includes('120')?120*60:90*60;
-  document.getElementById('activeExam').classList.remove('hidden');
-  document.getElementById('examList').classList.add('hidden');
-  renderSheetQ();startTimer();
-}
-function closeExam(){
-  document.getElementById('examSheet').classList.remove('open');
-  document.getElementById('activeExam').classList.add('hidden');
-  document.getElementById('examList').classList.remove('hidden');
-  if(state.examTimer){clearInterval(state.examTimer);state.examTimer=null;}
-}
-function renderSheetQ(){
-  const q=state.questions[state.qIndex];
-  document.getElementById('sheetQuestionText').textContent=(state.qIndex+1)+'. '+q.text;
-  document.getElementById('sheetOptionsBox').innerHTML=q.opts.map((o,i)=>`
-    <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-200 cursor-pointer">
-      <input type="radio" name="ans" value="${i}" ${state.answers[state.qIndex]===i?'checked':''} onchange="pickAnswer(${i})" class="w-4 h-4 accent-[#1e3a5f]"/>
-      <span class="text-sm text-slate-700">${String.fromCharCode(65+i)}. ${o}</span>
-    </label>
-  `).join('');
-  document.getElementById('sheetExamInfo').textContent=`Soal ${state.qIndex+1} dari ${state.questions.length}`;
-  document.getElementById('sheetExamProgress').style.width=(state.qIndex+1)/state.questions.length*100+'%';
-}
-function pickAnswer(i){state.answers[state.qIndex]=i;}
-function sheetPrev(){if(state.qIndex>0){state.qIndex--;renderSheetQ();}}
-function sheetNext(){if(state.qIndex<state.questions.length-1){state.qIndex++;renderSheetQ();}}
-function startTimer(){
-  if(state.examTimer)clearInterval(state.examTimer);
-  state.examTimer=setInterval(()=>{
-    if(state.examTime<=0){clearInterval(state.examTimer);showToast('Waktu habis!');submitExam();return;}
-    state.examTime--;const m=Math.floor(state.examTime/60);const s=state.examTime%60;
-    const t=m+':'+(s<10?'0':'')+s;
-    document.getElementById('examTimer').textContent=t;
-    document.getElementById('sheetExamTimer').textContent=t;
-  },1000);
-}
-function submitExam(){
-  if(!confirm('Kirim ujian? Jawaban tidak bisa diubah setelah dikirim.'))return;
-  if(state.examTimer){clearInterval(state.examTimer);state.examTimer=null;}
-  closeExam();
-  const answered=Object.keys(state.answers).length;
-  showToast(`Ujian dikirim! ${answered}/${state.questions.length} soal dijawab`);
-}
-
-function renderJadwal(){/* same as weekly, already rendered */}
-
-function renderKeuangan(){
-  document.getElementById('billsList').innerHTML=state.bills.map(b=>`
-    <div class="card flex items-center justify-between">
-      <div class="flex-1 min-w-0">
-        <p class="font-semibold text-sm text-slate-800">${b.jenis}</p>
-        <p class="text-xs text-slate-500">${b.periode} • Jatuh tempo ${b.jatuh}</p>
-      </div>
-      <div class="text-right flex-shrink-0 ml-3">
-        <p class="font-bold text-sm ${b.status==='lunas'?'text-green-600':'text-red-600'}">Rp ${b.nominal.toLocaleString('id-ID')}</p>
-        <span class="badge ${b.status==='lunas'?'badge-lunas':b.status==='menunggu'?'badge-menunggu':'badge-belum'}">${b.status==='lunas'?'Lunas':b.status==='menunggu'?'Menunggu':'Belum'}</span>
+        <button onclick="saveSupabaseConfig()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold py-2.5 rounded-xl shadow">
+          Simpan & Hubungkan
+        </button>
       </div>
     </div>
-  `).join('');
+  </div>
 
-  document.getElementById('payHistory').innerHTML=state.payments.map(p=>`
-    <div class="card flex items-center justify-between py-3">
-      <div>
-        <p class="font-medium text-sm text-slate-800">${p.jenis}</p>
-        <p class="text-xs text-slate-500">${p.periode}</p>
-      </div>
-      <div class="text-right">
-        <p class="text-xs text-slate-500">${p.tgl}</p>
-        <span class="badge badge-lunas">Lunas</span>
-      </div>
-    </div>
-  `).join('');
-}
+  <!-- JAVASCRIPT LOGIC & CBT ENGINE -->
+  <script>
+    // Initial State & Data
+    let currentRole = 'santri';
+    let currentTab = 'dashboard';
+    
+    // CBT Question Set
+    const cbtQuestions = [
+      {
+        q: "Apakah hukum wudhu bagi orang yang hendak melaksanakan Shalat Fardhu menurut kesepakatan fuqaha dalam Fathul Qarib?",
+        options: ["Wajib secara mutlak", "Sunnah Muakkad", "Makruh jika sudah bersuci", "Mubah"],
+        answer: 0
+      },
+      {
+        q: "Berapakah jumlah rukun wudhu yang disebutkan dalam Matan Safinatun Najah & Fathul Qarib?",
+        options: ["4 Rukun", "5 Rukun", "6 Rukun", "8 Rukun"],
+        answer: 2
+      },
+      {
+        q: "Air yang suci dan menyucikan serta tidak makruh digunakannya disebut sebagai air...",
+        options: ["Air Musyammas", "Air Mutlaq", "Air Musta'mal", "Air Mutanajjis"],
+        answer: 1
+      },
+      {
+        q: "Di bawah ini yang TERMASUK hal yang membatalkan wudhu adalah...",
+        options: ["Menyentuh rambut mahram", "Keluar sesuatu dari dua jalan (Qubul/Dubur)", "Makan makanan berkuah", "Membaca Al-Qur'an"],
+        answer: 1
+      },
+      {
+        q: "Niat wudhu dilakukan bersamaan dengan saat...",
+        options: ["Membaca Basmalah", "Basuh telapak tangan", "Membasuh bagian pertama dari wajah", "Mengusap kepala"],
+        answer: 2
+      }
+    ];
 
-function renderMateri(){
-  document.getElementById('materialsList').innerHTML=state.materials.map(m=>`
-    <div class="card flex items-center justify-between">
-      <div class="flex-1 min-w-0">
-        <p class="font-medium text-sm text-slate-800 truncate">${m.judul}</p>
-        <p class="text-xs text-slate-500">${m.jenis} • ${m.waktu}</p>
-      </div>
-      <button onclick="showToast('Membuka materi...')" class="btn-primary px-3 py-1.5 rounded-lg text-xs ml-3 flex-shrink-0">Buka</button>
-    </div>
-  `).join('');
+    let currentQIndex = 0;
+    let selectedAnswers = {};
+    let timerInterval = null;
 
-  document.getElementById('assignmentsList').innerHTML=state.assignments.map(a=>`
-    <div class="card flex items-center justify-between">
-      <div class="flex-1 min-w-0">
-        <p class="font-medium text-sm text-slate-800 truncate">${a.judul}</p>
-        <p class="text-xs text-slate-500">${a.matpel} • Deadline ${a.deadline}</p>
-      </div>
-      <div class="text-right flex-shrink-0 ml-3">
-        ${a.nilai!==null?`<p class="font-bold text-green-600">${a.nilai}</p>`:`<button onclick="showToast('Buka tugas')" class="btn-primary px-3 py-1.5 rounded-lg text-xs">Kerjakan</button>`}
-      </div>
-    </div>
-  `).join('');
-}
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
 
-function showToast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2200);
-}
-</script>
+    // Navigation Switcher
+    function switchTab(tabId) {
+      currentTab = tabId;
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+
+      // Desktop tab highlight
+      document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+        btn.classList.remove('text-emerald-800', 'bg-emerald-100');
+        btn.classList.add('text-slate-600');
+      });
+      
+      // Mobile nav button highlight
+      document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+        btn.classList.remove('text-emerald-800');
+        btn.classList.add('text-slate-500');
+      });
+
+      lucide.createIcons();
+    }
+
+    // Role Switcher
+    function switchRole(role) {
+      currentRole = role;
+      const avatar = document.getElementById('userAvatar');
+      const name = document.getElementById('userName');
+      const sub = document.getElementById('userSub');
+      const adminBtn = document.getElementById('adminTabBtn');
+
+      if (role === 'santri') {
+        avatar.innerText = 'AF';
+        avatar.className = 'w-12 h-12 rounded-full bg-amber-500 text-white font-extrabold flex items-center justify-center text-lg border-2 border-emerald-400 shadow';
+        name.innerText = 'Ahmad Fauzi';
+        sub.innerText = 'NIM: 2026001 • Kamar Al-Farabi 04 • Angkatan 2026';
+        adminBtn.classList.add('hidden');
+      } else if (role === 'ustadz') {
+        avatar.innerText = 'AB';
+        avatar.className = 'w-12 h-12 rounded-full bg-blue-600 text-white font-extrabold flex items-center justify-center text-lg border-2 border-emerald-400 shadow';
+        name.innerText = 'Ust. Dr. Abdullah, M.Ag';
+        sub.innerText = 'NIP: 19850401 • Pengampu Fiqih & Hadits';
+        adminBtn.classList.remove('hidden');
+      } else if (role === 'admin') {
+        avatar.innerText = 'AR';
+        avatar.className = 'w-12 h-12 rounded-full bg-rose-600 text-white font-extrabold flex items-center justify-center text-lg border-2 border-emerald-400 shadow';
+        name.innerText = 'Admin Sekretariat Pesantren';
+        sub.innerText = 'Pengasuhan & Keuangan Ar Royyan';
+        adminBtn.classList.remove('hidden');
+      }
+    }
+
+    // Presensi Mandiri
+    function doSelfAttendance() {
+      const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      const tbody = document.getElementById('attendanceTableBody');
+      const newRow = `
+        <tr class="bg-emerald-50/60">
+          <td class="p-3 font-semibold">${today}</td>
+          <td class="p-3 font-bold text-slate-800">Fathul Qarib (Fiqih Subuh)</td>
+          <td class="p-3 text-slate-500">${new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})} WIB</td>
+          <td class="p-3"><span class="badge badge-hadir">HADIR (PRESENSI)</span></td>
+          <td class="p-3 text-slate-500">Selfie & Location Verified</td>
+        </tr>
+      `;
+      tbody.insertAdjacentHTML('afterbegin', newRow);
+      alert('Presensi Berhasil! Kehadiran Anda hari ini telah tercatat.');
+      switchTab('presensi');
+    }
+
+    // CBT Exam Simulator Engine
+    function startCBTExam() {
+      document.getElementById('cbtListView').classList.add('hidden');
+      document.getElementById('cbtExamActiveView').classList.remove('hidden');
+      currentQIndex = 0;
+      selectedAnswers = {};
+      renderQuestion();
+      startTimer(3600);
+      lucide.createIcons();
+    }
+
+    function renderQuestion() {
+      const q = cbtQuestions[currentQIndex];
+      document.getElementById('cbtQuestionNumber').innerText = `Soal ${currentQIndex + 1} dari ${cbtQuestions.length}`;
+      document.getElementById('cbtQuestionText').innerText = q.q;
+
+      const container = document.getElementById('cbtOptionsContainer');
+      container.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const isChecked = selectedAnswers[currentQIndex] === idx;
+        const optionEl = document.createElement('div');
+        optionEl.className = `p-3.5 rounded-xl border cursor-pointer font-medium text-xs md:text-sm transition flex items-center space-x-3 ${isChecked ? 'bg-emerald-50 border-emerald-600 text-emerald-900 font-bold shadow-sm' : 'bg-slate-50 border-slate-200 hover:bg-slate-100 text-slate-700'}`;
+        optionEl.onclick = () => selectOption(idx);
+        optionEl.innerHTML = `
+          <div class="w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-600'}">
+            ${String.fromCharCode(65 + idx)}
+          </div>
+          <span>${opt}</span>
+        `;
+        container.appendChild(optionEl);
+      });
+
+      // Controls State
+      document.getElementById('prevBtn').style.visibility = currentQIndex === 0 ? 'hidden' : 'visible';
+      if (currentQIndex === cbtQuestions.length - 1) {
+        document.getElementById('nextBtn').classList.add('hidden');
+        document.getElementById('submitExamBtn').classList.remove('hidden');
+      } else {
+        document.getElementById('nextBtn').classList.remove('hidden');
+        document.getElementById('submitExamBtn').classList.add('hidden');
+      }
+    }
+
+    function selectOption(optIndex) {
+      selectedAnswers[currentQIndex] = optIndex;
+      renderQuestion();
+    }
+
+    function prevQuestion() {
+      if (currentQIndex > 0) { currentQIndex--; renderQuestion(); }
+    }
+
+    function nextQuestion() {
+      if (currentQIndex < cbtQuestions.length - 1) { currentQIndex++; renderQuestion(); }
+    }
+
+    function startTimer(seconds) {
+      let rem = seconds;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        rem--;
+        const m = Math.floor(rem / 60);
+        const s = rem % 60;
+        document.getElementById('cbtTimer').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        if (rem <= 0) {
+          clearInterval(timerInterval);
+          finishCBTExam();
+        }
+      }, 1000);
+    }
+
+    function finishCBTExam() {
+      clearInterval(timerInterval);
+      let correct = 0;
+      cbtQuestions.forEach((q, idx) => {
+        if (selectedAnswers[idx] === q.answer) correct++;
+      });
+
+      const score = (correct / cbtQuestions.length) * 100;
+      alert(`Ujian Selesai!\n\nJumlah Soal Benar: ${correct} dari ${cbtQuestions.length}\nNilai Akhir: ${score}.00 / 100\nStatus: ${score >= 70 ? 'LULUS (MUMTAZ)' : 'TIDAK LULUS'}`);
+      
+      document.getElementById('cbtExamActiveView').classList.add('hidden');
+      document.getElementById('cbtListView').classList.remove('hidden');
+    }
+
+    // Payment Logic
+    function openPaymentModal() { document.getElementById('paymentModal').classList.remove('hidden'); }
+    function closePaymentModal() { document.getElementById('paymentModal').classList.add('hidden'); }
+    
+    function submitPayment(e) {
+      e.preventDefault();
+      const month = document.getElementById('payMonth').value;
+      const badge = document.getElementById('dashPayBadge');
+      const payBadge = document.getElementById('payAgustusBadge');
+      
+      badge.className = 'badge badge-menunggu';
+      badge.innerText = 'MENUNGGU VERIFIKASI';
+      
+      if (payBadge) {
+        payBadge.className = 'badge badge-menunggu';
+        payBadge.innerText = 'MENUNGGU VERIFIKASI';
+      }
+
+      closePaymentModal();
+      alert(`Bukti transfer untuk bulan ${month} berhasil di-upload dan sedang dalam proses verifikasi Admin Sekretariat!`);
+      switchTab('keuangan');
+    }
+
+    function approvePayment() {
+      document.getElementById('dashPayBadge').className = 'badge badge-lunas';
+      document.getElementById('dashPayBadge').innerText = 'LUNAS';
+      document.getElementById('adminPayStatusBadge').className = 'badge badge-lunas';
+      document.getElementById('adminPayStatusBadge').innerText = 'VERIFIED / LUNAS';
+      alert('Pembayaran Syahriyah Santri berhasil disetujui (Approved)!');
+    }
+
+    function rejectPayment() {
+      document.getElementById('dashPayBadge').className = 'badge badge-belum';
+      document.getElementById('dashPayBadge').innerText = 'DITOLAK';
+      document.getElementById('adminPayStatusBadge').className = 'badge badge-belum';
+      document.getElementById('adminPayStatusBadge').innerText = 'DITOLAK';
+      alert('Pembayaran Syahriyah Santri telah ditolak.');
+    }
+
+    // Config Modal
+    function toggleConfigModal() {
+      document.getElementById('configModal').classList.toggle('hidden');
+    }
+
+    function saveSupabaseConfig() {
+      const url = document.getElementById('spUrl').value;
+      const key = document.getElementById('spKey').value;
+      if (url && key) {
+        document.getElementById('connStatusText').innerText = 'Live Supabase DB';
+        toggleConfigModal();
+        alert('Koneksi Supabase berhasil disimpan!');
+      } else {
+        alert('Mohon isi URL dan Anon Key Supabase.');
+      }
+    }
+  </script>
 </body>
 </html>
