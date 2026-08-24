@@ -31,6 +31,7 @@
             amber: {
               500: '#f59e0b',
               600: '#d97706',
+              900: '#78350f',
             }
           }
         }
@@ -41,10 +42,12 @@
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #0f172a; overscroll-behavior-y: none; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.25s ease-in-out; }
+    .role-view { display: none; }
+    .role-view.active { display: block; animation: fadeIn 0.25s ease-in-out; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; animation: fadeIn 0.2s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-    .badge { display: inline-flex; align-items: center; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
+    .badge { display: inline-flex; align-items: center; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
     .badge-lunas { background-color: #dcfce7; color: #15803d; }
     .badge-menunggu { background-color: #fef9c3; color: #a16207; }
     .badge-belum { background-color: #fee2e2; color: #b91c1c; }
@@ -54,716 +57,780 @@
     .badge-alpa { background-color: #ffe4e6; color: #be123c; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 pb-24 md:pb-8">
+<body class="bg-slate-50 text-slate-800">
 
-  <!-- TOP HEADER & ROLE SWITCHER -->
-  <header class="bg-emerald-900 text-white sticky top-0 z-40 shadow-md">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+  <!-- ==================== GLOBAL TOP BAR (WITH DISTINCT ROLE SWITCHER) ==================== -->
+  <header id="mainHeader" class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md transition-colors duration-300">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
       <!-- Logo & Brand -->
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-700/80 border border-emerald-500/30 flex items-center justify-center shadow-inner">
+        <div id="brandIconBg" class="w-10 h-10 rounded-xl bg-emerald-700/80 border border-emerald-500/30 flex items-center justify-center shadow-inner">
           <i data-lucide="book-open-check" class="w-6 h-6 text-emerald-200"></i>
         </div>
         <div>
-          <h1 class="font-bold text-base md:text-lg leading-tight text-emerald-50">LMS Ar Royyan</h1>
-          <p class="text-xs text-emerald-300 font-medium">Pesantren Mahasiswa</p>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-extrabold text-base md:text-lg leading-tight text-white">LMS Ar Royyan</h1>
+            <span id="roleBadgeHeader" class="bg-emerald-800 border border-emerald-600 text-emerald-100 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase">
+              SANTRI PORTAL
+            </span>
+          </div>
+          <p id="brandSubHeader" class="text-xs text-emerald-200 font-medium">Pesantren Mahasiswa Ar Royyan</p>
         </div>
       </div>
 
-      <!-- Role Switcher & Config Button -->
-      <div class="flex items-center space-x-2">
-        <!-- Role Dropdown -->
-        <div class="relative">
-          <select id="roleSelect" onchange="switchRole(this.value)" class="bg-emerald-800 border border-emerald-600/60 text-white text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer">
+      <!-- Role Selector Dropdown -->
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-1.5 bg-black/20 p-1 rounded-xl border border-white/10">
+          <span class="text-[11px] font-bold text-white/80 hidden sm:inline pl-2">Mode Peran:</span>
+          <select id="roleSelector" onchange="switchRole(this.value)" class="bg-white text-slate-900 text-xs font-extrabold rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer shadow">
             <option value="santri" selected>🎓 Santri: Ahmad Fauzi</option>
-            <option value="ustadz">👳 Ustadz: Ust. Abdullah</option>
-            <option value="admin">⚙️ Admin: Pengasuh</option>
+            <option value="ustadz">👳 Ustadz: Ust. Dr. Abdullah</option>
+            <option value="admin">⚙️ Admin: Pengasuh Sekretariat</option>
           </select>
         </div>
-        
-        <!-- Supabase Status Pill -->
-        <button onclick="toggleConfigModal()" class="hidden md:flex items-center space-x-1.5 bg-emerald-950/60 border border-emerald-700/50 hover:bg-emerald-800 text-emerald-200 px-2.5 py-1.5 rounded-lg text-xs font-medium transition">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="connStatusText">Demo Mode</span>
-        </button>
       </div>
     </div>
   </header>
 
-  <!-- SUB HEADER BANNER FOR USER PROFILE -->
-  <div class="bg-emerald-800 text-white px-4 py-4 shadow-inner">
-    <div class="max-w-5xl mx-auto flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div id="userAvatar" class="w-12 h-12 rounded-full bg-amber-500 text-white font-extrabold flex items-center justify-center text-lg border-2 border-emerald-400 shadow">
-          AF
-        </div>
-        <div>
-          <h2 id="userName" class="font-bold text-lg text-white">Ahmad Fauzi</h2>
-          <p id="userSub" class="text-xs text-emerald-200">NIM: 2026001 • Kamar Al-Farabi 04 • Angkatan 2026</p>
-        </div>
-      </div>
-      <div class="hidden sm:block text-right">
-        <span class="inline-block bg-emerald-900/60 text-emerald-200 border border-emerald-700/60 rounded-lg px-3 py-1 text-xs font-semibold">
-          <i data-lucide="calendar" class="w-3.5 h-3.5 inline mr-1"></i> Semester Ganjil 2026/2027
-        </span>
-      </div>
-    </div>
-  </div>
 
-  <!-- MAIN CONTAINER -->
-  <main class="max-w-5xl mx-auto px-4 py-5">
-
-    <!-- DESKTOP TOP NAV TABS (Hidden on mobile) -->
-    <div class="hidden md:flex items-center space-x-2 border-b border-slate-200 mb-6 pb-2">
-      <button onclick="switchTab('dashboard')" class="nav-tab-btn active px-4 py-2 rounded-lg text-sm font-semibold text-emerald-800 bg-emerald-100 flex items-center space-x-2">
-        <i data-lucide="layout-dashboard" class="w-4 h-4"></i><span>Beranda</span>
-      </button>
-      <button onclick="switchTab('presensi')" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
-        <i data-lucide="user-check" class="w-4 h-4"></i><span>Presensi</span>
-      </button>
-      <button onclick="switchTab('ujian')" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
-        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i><span>Ujian CBT</span>
-      </button>
-      <button onclick="switchTab('keuangan')" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
-        <i data-lucide="credit-card" class="w-4 h-4"></i><span>Syahriyah</span>
-      </button>
-      <button onclick="switchTab('materi')" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
-        <i data-lucide="book-open" class="w-4 h-4"></i><span>Dirosah & Kitab</span>
-      </button>
-      <button onclick="switchTab('akademik')" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
-        <i data-lucide="graduation-cap" class="w-4 h-4"></i><span>KRS/KHS</span>
-      </button>
-      <button id="adminTabBtn" onclick="switchTab('adminPanel')" class="hidden nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 flex items-center space-x-2">
-        <i data-lucide="shield-alert" class="w-4 h-4"></i><span>Panel Kelola</span>
-      </button>
-    </div>
-
-    <!-- ==================== TAB 1: BERANDA (DASHBOARD) ==================== -->
-    <div id="tab-dashboard" class="tab-content active">
-      <!-- Quick Stats Grid -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-            <i data-lucide="user-check" class="w-5 h-5"></i>
+  <!-- ========================================================================= -->
+  <!-- 🎓 ROLE 1: SANTRI PORTAL (MOBILE-FIRST APP DESIGN)                       -->
+  <!-- ========================================================================= -->
+  <div id="role-santri-view" class="role-view active pb-24 md:pb-12">
+    <!-- Student Header Banner -->
+    <div class="bg-gradient-to-r from-emerald-800 to-emerald-700 text-white px-4 py-5 shadow-inner">
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-3.5">
+          <div class="w-14 h-14 rounded-2xl bg-amber-500 text-white font-extrabold flex items-center justify-center text-xl border-2 border-emerald-300 shadow-md">
+            AF
           </div>
           <div>
-            <p class="text-xs text-slate-500 font-medium">Kehadiran</p>
-            <h3 class="text-lg font-extrabold text-slate-800">96.5%</h3>
+            <h2 class="font-extrabold text-xl text-white">Ahmad Fauzi</h2>
+            <p class="text-xs text-emerald-100 font-medium">NIM: 2026001 • Kamar Al-Farabi 04 • Angkatan 2026</p>
+            <span class="inline-block mt-1 text-[10px] font-bold bg-emerald-950/60 border border-emerald-600/50 px-2 py-0.5 rounded text-emerald-200">
+              Santri Aktif Dirosah Wustho
+            </span>
           </div>
         </div>
 
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-            <i data-lucide="wallet" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <p class="text-xs text-slate-500 font-medium">Syahriyah</p>
-            <span id="dashPayBadge" class="badge badge-lunas">LUNAS</span>
-          </div>
-        </div>
-
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-            <i data-lucide="clock" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <p class="text-xs text-slate-500 font-medium">Ujian Aktif</p>
-            <h3 class="text-lg font-extrabold text-slate-800">1 Ujian</h3>
-          </div>
-        </div>
-
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
-            <i data-lucide="book" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <p class="text-xs text-slate-500 font-medium">Materi Baru</p>
-            <h3 class="text-lg font-extrabold text-slate-800">4 File</h3>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Action Cards -->
-      <div class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white rounded-2xl p-5 mb-6 shadow-md relative overflow-hidden">
-        <div class="relative z-10">
-          <span class="bg-emerald-700/80 text-emerald-200 text-xs font-semibold px-2.5 py-1 rounded-md mb-2 inline-block">
-            📌 Dirosah Subuh Hari Ini
+        <div class="hidden sm:block text-right">
+          <span class="bg-emerald-950/60 border border-emerald-600/60 text-emerald-200 text-xs font-bold px-3 py-1.5 rounded-xl block">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 inline mr-1"></i> Semester Ganjil 2026/2027
           </span>
-          <h3 class="text-xl font-bold">Kitab Fathul Qarib (Fiqih Ibadah)</h3>
-          <p class="text-xs text-emerald-200 mt-1 mb-4">Pengampu: Ust. Dr. Abdullah, M.Ag • Waktu: 05.30 - 06.30 WIB</p>
-          
-          <div class="flex flex-wrap gap-2">
-            <button onclick="doSelfAttendance()" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center space-x-1.5 transition">
-              <i data-lucide="qr-code" class="w-4 h-4"></i><span>Presensi Masuk Sekarang</span>
-            </button>
-            <button onclick="switchTab('materi')" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1.5">
-              <i data-lucide="file-text" class="w-4 h-4"></i><span>Buka Kitab / Materi</span>
-            </button>
-          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Schedule & Announcements Grid -->
-      <div class="grid md:grid-cols-3 gap-6">
-        <!-- Jadwal Dirosah Hari Ini -->
-        <div class="md:col-span-2 bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-slate-800 text-base flex items-center space-x-2">
+    <main class="max-w-6xl mx-auto px-4 py-6">
+
+      <!-- Desktop Nav Tabs for Santri -->
+      <div class="hidden md:flex items-center space-x-2 border-b border-slate-200 mb-6 pb-2">
+        <button onclick="switchSantriTab('s-dash')" class="s-tab-btn active px-4 py-2 rounded-xl text-sm font-extrabold text-emerald-800 bg-emerald-100 flex items-center space-x-2">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i><span>Beranda Saya</span>
+        </button>
+        <button onclick="switchSantriTab('s-presensi')" class="s-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+          <i data-lucide="user-check" class="w-4 h-4"></i><span>Presensi Dirosah</span>
+        </button>
+        <button onclick="switchSantriTab('s-cbt')" class="s-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+          <i data-lucide="file-spreadsheet" class="w-4 h-4"></i><span>Ruang Ujian CBT</span>
+        </button>
+        <button onclick="switchSantriTab('s-syahriyah')" class="s-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+          <i data-lucide="credit-card" class="w-4 h-4"></i><span>Pembayaran Syahriyah</span>
+        </button>
+        <button onclick="switchSantriTab('s-materi')" class="s-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+          <i data-lucide="book-open" class="w-4 h-4"></i><span>Kitab & Materi</span>
+        </button>
+        <button onclick="switchSantriTab('s-khs')" class="s-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+          <i data-lucide="graduation-cap" class="w-4 h-4"></i><span>KHS / Nilai</span>
+        </button>
+      </div>
+
+      <!-- SANTRI TAB 1: DASHBOARD -->
+      <div id="s-dash" class="tab-pane active">
+        <!-- Quick Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-semibold text-slate-500 block">Kehadiran Dirosah</span>
+            <h3 class="text-xl font-extrabold text-emerald-700 mt-1">96.5%</h3>
+            <span class="text-[10px] text-emerald-600 font-bold">✓ Memenuhi syarat Ujian</span>
+          </div>
+
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-semibold text-slate-500 block">Syahriyah Agustus</span>
+            <div class="mt-1">
+              <span id="santriDashPayBadge" class="badge badge-lunas">LUNAS</span>
+            </div>
+            <span class="text-[10px] text-slate-400 font-medium block mt-1">Rp 350.000</span>
+          </div>
+
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-semibold text-slate-500 block">Ujian CBT Aktif</span>
+            <h3 class="text-xl font-extrabold text-amber-600 mt-1">1 Ujian</h3>
+            <span class="text-[10px] text-amber-700 font-bold">Fiqih Fathul Qarib</span>
+          </div>
+
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <span class="text-xs font-semibold text-slate-500 block">IP Dirosah (IPD)</span>
+            <h3 class="text-xl font-extrabold text-slate-800 mt-1">3.85</h3>
+            <span class="text-[10px] text-slate-500 font-bold">Predikat: MUMTAZ</span>
+          </div>
+        </div>
+
+        <!-- Banner Quick Action Presensi -->
+        <div class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white rounded-2xl p-5 mb-6 shadow-md relative overflow-hidden">
+          <span class="bg-amber-500 text-slate-900 text-[11px] font-extrabold px-2.5 py-1 rounded-md mb-2 inline-block uppercase">
+            ⚡ Presensi Dirosah Hari Ini
+          </span>
+          <h3 class="text-xl font-bold">Fathul Qarib (Fiqih Ibadah Subuh)</h3>
+          <p class="text-xs text-emerald-200 mt-1 mb-4">Pengampu: Ust. Dr. Abdullah, M.Ag • Ruang Utama Pesantren</p>
+          
+          <button onclick="doSantriSelfAttendance()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs px-5 py-3 rounded-xl shadow-lg flex items-center space-x-2 transition">
+            <i data-lucide="qr-code" class="w-4 h-4"></i>
+            <span>Presensi Masuk Dirosah Now</span>
+          </button>
+        </div>
+
+        <!-- Schedule & Announcements Grid -->
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="md:col-span-2 bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+            <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center space-x-2">
               <i data-lucide="calendar" class="w-5 h-5 text-emerald-700"></i>
               <span>Jadwal Dirosah Pekan Ini</span>
             </h3>
-            <span class="text-xs text-slate-500 font-medium">Senin - Sabtu</span>
-          </div>
 
-          <div class="space-y-3">
-            <!-- Schedule item 1 -->
-            <div class="p-3.5 bg-slate-50 hover:bg-emerald-50/50 rounded-xl border border-slate-200 transition flex items-start justify-between">
-              <div class="flex space-x-3">
-                <div class="text-center bg-emerald-100 text-emerald-800 px-2.5 py-1.5 rounded-lg shrink-0">
-                  <span class="block text-xs font-bold uppercase">Senin</span>
-                  <span class="text-xs font-extrabold">05:30</span>
-                </div>
+            <div class="space-y-3">
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                 <div>
-                  <h4 class="font-bold text-slate-800 text-sm">Fathul Qarib (Fiqih)</h4>
-                  <p class="text-xs text-slate-500">Ust. Dr. Abdullah, M.Ag • Ruang Utama Pesantren</p>
+                  <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded uppercase">Senin • Subuh 05.30 WIB</span>
+                  <h4 class="font-bold text-slate-800 text-sm mt-1">Fathul Qarib (Bab Thaharah)</h4>
+                  <p class="text-xs text-slate-500">Ust. Dr. Abdullah • Ruang Utama</p>
                 </div>
+                <span class="badge badge-hadir">Hadir</span>
               </div>
-              <span class="badge badge-hadir">Hadir</span>
-            </div>
 
-            <!-- Schedule item 2 -->
-            <div class="p-3.5 bg-slate-50 hover:bg-emerald-50/50 rounded-xl border border-slate-200 transition flex items-start justify-between">
-              <div class="flex space-x-3">
-                <div class="text-center bg-emerald-100 text-emerald-800 px-2.5 py-1.5 rounded-lg shrink-0">
-                  <span class="block text-xs font-bold uppercase">Selasa</span>
-                  <span class="text-xs font-extrabold">19:30</span>
-                </div>
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
                 <div>
-                  <h4 class="font-bold text-slate-800 text-sm">Riyadhus Shalihin (Hadits)</h4>
-                  <p class="text-xs text-slate-500">Ust. Mahmud Syukri • Aula Lantai 2</p>
+                  <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded uppercase">Selasa • Isya 19.30 WIB</span>
+                  <h4 class="font-bold text-slate-800 text-sm mt-1">Riyadhus Shalihin (Hadits Adab)</h4>
+                  <p class="text-xs text-slate-500">Ust. Mahmud Syukri • Aula Utama</p>
                 </div>
+                <span class="badge badge-hadir">Hadir</span>
               </div>
-              <span class="badge badge-hadir">Hadir</span>
-            </div>
-
-            <!-- Schedule item 3 -->
-            <div class="p-3.5 bg-slate-50 hover:bg-emerald-50/50 rounded-xl border border-slate-200 transition flex items-start justify-between">
-              <div class="flex space-x-3">
-                <div class="text-center bg-amber-100 text-amber-800 px-2.5 py-1.5 rounded-lg shrink-0">
-                  <span class="block text-xs font-bold uppercase">Rabu</span>
-                  <span class="text-xs font-extrabold">05:30</span>
-                </div>
-                <div>
-                  <h4 class="font-bold text-slate-800 text-sm">Matan Al-Ajurrumiyyah (Nahwu)</h4>
-                  <p class="text-xs text-slate-500">Ust. Ahmad Hidayat, M.Pd • Ruang Kelas A</p>
-                </div>
-              </div>
-              <span class="badge badge-menunggu">Mendatang</span>
             </div>
           </div>
-        </div>
 
-        <!-- Announcements & Information Sidebar -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between">
-          <div>
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
             <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center space-x-2">
               <i data-lucide="bell" class="w-5 h-5 text-amber-600"></i>
-              <span>Pengumuman</span>
+              <span>Pengumuman Pesantren</span>
             </h3>
-            
-            <div class="space-y-3">
-              <div class="p-3 bg-amber-50 rounded-xl border border-amber-200">
-                <h4 class="font-bold text-amber-900 text-xs">Ujian Tengah Dirosah (UTD)</h4>
-                <p class="text-xs text-amber-800 mt-1">Ujian Tengah Dirosah akan dilaksanakan serentak berbasis CBT mulai Senin depan.</p>
-              </div>
-
-              <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                <h4 class="font-bold text-slate-800 text-xs">Batas Pembayaran Syahriyah</h4>
-                <p class="text-xs text-slate-600 mt-1">Pembayaran Syahriyah bulan Agustus diharapkan sebelum tanggal 10 tiap bulannya.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-4 pt-3 border-t border-slate-100">
-            <button onclick="switchTab('keuangan')" class="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-2.5 rounded-xl transition">
-              Upload Bukti Syahriyah
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== TAB 2: PRESENSI ==================== -->
-    <div id="tab-presensi" class="tab-content">
-      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mb-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
-          <div>
-            <h3 class="font-bold text-slate-800 text-lg">Rekap Presensi Kehadiran</h3>
-            <p class="text-xs text-slate-500">Monitoring kehadiran dirosah santri Ar Royyan</p>
-          </div>
-
-          <button onclick="doSelfAttendance()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center justify-center space-x-2">
-            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-            <span>Presensi Mandiri</span>
-          </button>
-        </div>
-
-        <!-- Presensi Stats -->
-        <div class="grid grid-cols-4 gap-2 text-center mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
-          <div>
-            <span class="block text-lg font-extrabold text-emerald-700">24</span>
-            <span class="text-[11px] font-semibold text-slate-500">Hadir</span>
-          </div>
-          <div>
-            <span class="block text-lg font-extrabold text-blue-600">1</span>
-            <span class="text-[11px] font-semibold text-slate-500">Izin</span>
-          </div>
-          <div>
-            <span class="block text-lg font-extrabold text-amber-600">0</span>
-            <span class="text-[11px] font-semibold text-slate-500">Sakit</span>
-          </div>
-          <div>
-            <span class="block text-lg font-extrabold text-rose-600">0</span>
-            <span class="text-[11px] font-semibold text-slate-500">Alpa</span>
-          </div>
-        </div>
-
-        <!-- Attendance History Table -->
-        <div class="overflow-x-auto">
-          <table class="w-full text-xs text-left">
-            <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[11px]">
-              <tr>
-                <th class="p-3 rounded-l-lg">Tanggal</th>
-                <th class="p-3">Mata Dirosah</th>
-                <th class="p-3">Waktu</th>
-                <th class="p-3">Status</th>
-                <th class="p-3 rounded-r-lg">Keterangan</th>
-              </tr>
-            </thead>
-            <tbody id="attendanceTableBody" class="divide-y divide-slate-100">
-              <tr>
-                <td class="p-3 font-semibold">24 Aug 2026</td>
-                <td class="p-3 font-bold text-slate-800">Fathul Qarib (Fiqih)</td>
-                <td class="p-3 text-slate-500">05:30 WIB</td>
-                <td class="p-3"><span class="badge badge-hadir">HADIR</span></td>
-                <td class="p-3 text-slate-500">Presensi via QR App</td>
-              </tr>
-              <tr>
-                <td class="p-3 font-semibold">23 Aug 2026</td>
-                <td class="p-3 font-bold text-slate-800">Riyadhus Shalihin (Hadits)</td>
-                <td class="p-3 text-slate-500">19:30 WIB</td>
-                <td class="p-3"><span class="badge badge-hadir">HADIR</span></td>
-                <td class="p-3 text-slate-500">Presensi Mandiri</td>
-              </tr>
-              <tr>
-                <td class="p-3 font-semibold">21 Aug 2026</td>
-                <td class="p-3 font-bold text-slate-800">Matan Al-Ajurrumiyyah (Nahwu)</td>
-                <td class="p-3 text-slate-500">05:30 WIB</td>
-                <td class="p-3"><span class="badge badge-izin">IZIN</span></td>
-                <td class="p-3 text-slate-500">Tugas Kuliah Kampus</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== TAB 3: UJIAN CBT ==================== -->
-    <div id="tab-ujian" class="tab-content">
-      <div id="cbtListView" class="space-y-4">
-        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <h3 class="font-bold text-slate-800 text-lg">Ujian Online CBT (Computer Based Test)</h3>
-            <p class="text-xs text-slate-500">Pelaksanaan ujian evaluasi dirosah santri Ar Royyan</p>
-          </div>
-          <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-xs font-bold">1 Ujian Ready</span>
-        </div>
-
-        <!-- Available Exam Card 1 -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-emerald-500 transition">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="flex items-start space-x-3">
-              <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center shrink-0">
-                <i data-lucide="file-check-2" class="w-6 h-6"></i>
-              </div>
-              <div>
-                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Fiqih Ibadah</span>
-                <h4 class="font-bold text-slate-800 text-base mt-1">Ujian Evaluasi Fathul Qarib — Thaharah & Shalat</h4>
-                <p class="text-xs text-slate-500 mt-1">Durasi: 60 Menit • 5 Soal Pilihan Ganda & Esai • Passing Grade: 70</p>
-              </div>
-            </div>
-
-            <button onclick="startCBTExam()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-extrabold px-5 py-3 rounded-xl shadow-md transition flex items-center justify-center space-x-2 shrink-0">
-              <i data-lucide="play" class="w-4 h-4 fill-current"></i>
-              <span>Kerjakan Ujian</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Completed Exam Card 2 -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm opacity-90">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="flex items-start space-x-3">
-              <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 font-bold flex items-center justify-center shrink-0">
-                <i data-lucide="check-circle" class="w-6 h-6"></i>
-              </div>
-              <div>
-                <span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Nahwu Dirosah</span>
-                <h4 class="font-bold text-slate-800 text-base mt-1">Ujian Matan Al-Ajurrumiyyah (Bab Fi'il)</h4>
-                <p class="text-xs text-slate-500 mt-1">Selesai pada: 15 Aug 2026 • Durasi: 45 Menit</p>
-              </div>
-            </div>
-
-            <div class="text-right">
-              <span class="text-xs text-slate-500 font-semibold block">Nilai Akhir:</span>
-              <span class="text-xl font-extrabold text-emerald-700">92.00 / 100</span>
-              <span class="badge badge-hadir block mt-1">LULUS (MUMTAZ)</span>
+            <div class="p-3.5 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 leading-relaxed">
+              <strong>Ujian Tengah Dirosah (UTD):</strong> Ujian CBT Fathul Qarib siap dikerjakan di menu Ruang Ujian CBT.
             </div>
           </div>
         </div>
       </div>
 
-      <!-- CBT SIMULATOR ACTIVE EXAM VIEW (Hidden by default) -->
-      <div id="cbtExamActiveView" class="hidden bg-white rounded-2xl border border-slate-300 shadow-lg p-6">
-        <!-- Exam Header -->
-        <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-5">
-          <div>
-            <span class="text-xs font-bold text-emerald-700 uppercase">CBT Exam Mode</span>
-            <h3 class="font-extrabold text-slate-800 text-lg">Ujian Fathul Qarib (Thaharah & Shalat)</h3>
-          </div>
-          <div class="bg-rose-50 border border-rose-200 text-rose-700 px-3.5 py-1.5 rounded-xl flex items-center space-x-2">
-            <i data-lucide="timer" class="w-4 h-4 animate-spin"></i>
-            <span id="cbtTimer" class="font-mono font-extrabold text-sm">59:45</span>
-          </div>
-        </div>
-
-        <!-- Question Body -->
-        <div class="mb-6">
-          <div class="flex items-center justify-between mb-3">
-            <span id="cbtQuestionNumber" class="text-xs font-bold bg-slate-100 text-slate-700 px-3 py-1 rounded-lg">Soal 1 dari 5</span>
-            <span class="text-xs text-slate-400 font-medium">Bobot: 20 Poin</span>
-          </div>
-
-          <p id="cbtQuestionText" class="text-sm md:text-base font-semibold text-slate-800 mb-4 leading-relaxed">
-            Apakah hukum wudhu bagi orang yang hendak melaksanakan Shalat Fardhu menurut kesepakatan fuqaha dalam Fathul Qarib?
-          </p>
-
-          <!-- Options List -->
-          <div id="cbtOptionsContainer" class="space-y-2.5">
-            <!-- Dynamic Options via JS -->
-          </div>
-        </div>
-
-        <!-- Exam Controls Footer -->
-        <div class="flex items-center justify-between border-t border-slate-200 pt-4">
-          <button id="prevBtn" onclick="prevQuestion()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center space-x-1">
-            <i data-lucide="chevron-left" class="w-4 h-4"></i><span>Sebelumnya</span>
-          </button>
-          
-          <button id="nextBtn" onclick="nextQuestion()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition flex items-center space-x-1">
-            <span>Selanjutnya</span><i data-lucide="chevron-right" class="w-4 h-4"></i>
-          </button>
-
-          <button id="submitExamBtn" onclick="finishCBTExam()" class="hidden bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl shadow transition">
-            Submit & Selesaikan Ujian
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== TAB 4: KEUANGAN (SYAHRIYAH) ==================== -->
-    <div id="tab-keuangan" class="tab-content">
-      <div class="grid md:grid-cols-3 gap-6">
-        <!-- Main Payment Status -->
-        <div class="md:col-span-2 bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <div class="flex items-center justify-between mb-4">
+      <!-- SANTRI TAB 2: PRESENSI -->
+      <div id="s-presensi" class="tab-pane">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
             <div>
-              <h3 class="font-bold text-slate-800 text-lg">Tagihan Syahriyah & Iuran</h3>
-              <p class="text-xs text-slate-500">Kelola dan upload bukti pembayaran bulanan santri</p>
+              <h3 class="font-bold text-slate-800 text-lg">Riwayat Kehadiran Dirosah Saya</h3>
+              <p class="text-xs text-slate-500">Rekapitulasi absensi santri Ahmad Fauzi</p>
             </div>
-            <button onclick="openPaymentModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow flex items-center space-x-1.5">
-              <i data-lucide="upload-cloud" class="w-4 h-4"></i><span>Upload Bukti</span>
+            <button onclick="doSantriSelfAttendance()" class="bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow flex items-center justify-center space-x-2">
+              <i data-lucide="check-circle" class="w-4 h-4"></i><span>Presensi Mandiri</span>
             </button>
           </div>
 
-          <!-- History Table -->
           <div class="overflow-x-auto">
             <table class="w-full text-xs text-left">
-              <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[11px]">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase">
                 <tr>
-                  <th class="p-3 rounded-l-lg">Bulan / Periode</th>
-                  <th class="p-3">Nominal</th>
+                  <th class="p-3">Tanggal</th>
+                  <th class="p-3">Kitab Dirosah</th>
                   <th class="p-3">Status</th>
-                  <th class="p-3 rounded-r-lg">Tgl Verifikasi</th>
+                  <th class="p-3">Keterangan</th>
                 </tr>
               </thead>
-              <tbody id="paymentTableBody" class="divide-y divide-slate-100">
+              <tbody id="santriAttendanceTbody" class="divide-y divide-slate-100">
                 <tr>
-                  <td class="p-3 font-bold text-slate-800">Agustus 2026</td>
-                  <td class="p-3 font-semibold text-slate-700">Rp 350.000</td>
-                  <td class="p-3"><span id="payAgustusBadge" class="badge badge-lunas">LUNAS</span></td>
-                  <td class="p-3 text-slate-500">05 Aug 2026</td>
+                  <td class="p-3 font-semibold">24 Aug 2026</td>
+                  <td class="p-3 font-bold text-slate-800">Fathul Qarib (Fiqih)</td>
+                  <td class="p-3"><span class="badge badge-hadir">HADIR</span></td>
+                  <td class="p-3 text-slate-500">Verified Location</td>
                 </tr>
                 <tr>
-                  <td class="p-3 font-bold text-slate-800">Juli 2026</td>
-                  <td class="p-3 font-semibold text-slate-700">Rp 350.000</td>
-                  <td class="p-3"><span class="badge badge-lunas">LUNAS</span></td>
-                  <td class="p-3 text-slate-500">03 Jul 2026</td>
+                  <td class="p-3 font-semibold">23 Aug 2026</td>
+                  <td class="p-3 font-bold text-slate-800">Riyadhus Shalihin (Hadits)</td>
+                  <td class="p-3"><span class="badge badge-hadir">HADIR</span></td>
+                  <td class="p-3 text-slate-500">Presensi Mandiri</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
+      </div>
 
-        <!-- Bank Account Info Sidebar -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center space-x-2">
-            <i data-lucide="landmark" class="w-5 h-5 text-emerald-700"></i>
-            <span>Rekening Pembayaran</span>
-          </h3>
-
-          <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-3">
+      <!-- SANTRI TAB 3: RUANG UJIAN CBT -->
+      <div id="s-cbt" class="tab-pane">
+        <div id="santriCbtListView" class="space-y-4">
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
-              <span class="text-[11px] text-emerald-800 font-semibold block uppercase">Bank Syariah Indonesia (BSI)</span>
-              <span class="font-mono font-extrabold text-lg text-emerald-950 block">7123-4567-8901</span>
-              <span class="text-xs text-slate-600 block">a.n. Pesantren Mahasiswa Ar Royyan</span>
+              <h3 class="font-bold text-slate-800 text-lg">Ruang Ujian CBT Online</h3>
+              <p class="text-xs text-slate-500">Evaluasi dirosah santri Ar Royyan berbasis Komputer/Mobile</p>
             </div>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">1 Ujian Aktif</span>
+          </div>
 
-            <div class="pt-2 border-t border-emerald-200/80">
-              <span class="text-[11px] text-slate-500 block">Nominal Syahriyah:</span>
-              <span class="text-sm font-extrabold text-slate-800">Rp 350.000 / Bulan</span>
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-emerald-500 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Fiqih Wustho</span>
+              <h4 class="font-bold text-slate-800 text-base mt-1">Ujian Evaluasi Fathul Qarib — Thaharah & Shalat</h4>
+              <p class="text-xs text-slate-500 mt-1">Durasi: 60 Menit • 5 Soal • Passing Grade: 70</p>
             </div>
+            <button onclick="startSantriExam()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs px-5 py-3 rounded-xl shadow transition flex items-center justify-center space-x-2 shrink-0">
+              <i data-lucide="play" class="w-4 h-4 fill-current"></i><span>Mulai Kerjakan</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- CBT Exam Simulator Box -->
+        <div id="santriCbtExamBox" class="hidden bg-white rounded-2xl border border-slate-300 shadow-xl p-6">
+          <div class="flex items-center justify-between border-b pb-4 mb-4">
+            <h3 class="font-extrabold text-slate-800 text-base">Ujian Fathul Qarib (CBT Mode)</h3>
+            <div class="bg-rose-50 border border-rose-200 text-rose-700 px-3 py-1 rounded-xl text-xs font-mono font-extrabold flex items-center space-x-1">
+              <i data-lucide="timer" class="w-4 h-4"></i><span id="cbtTimerText">59:50</span>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <span id="qNumText" class="text-xs font-bold bg-slate-100 text-slate-700 px-3 py-1 rounded-lg">Soal 1 dari 5</span>
+            <p id="qContentText" class="text-sm font-semibold text-slate-800 mt-3 mb-4 leading-relaxed"></p>
+            <div id="qOptionsDiv" class="space-y-2"></div>
+          </div>
+
+          <div class="flex items-center justify-between border-t pt-4">
+            <button id="qPrevBtn" onclick="santriPrevQ()" class="bg-slate-100 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl">Sebelumnya</button>
+            <button id="qNextBtn" onclick="santriNextQ()" class="bg-emerald-700 text-white text-xs font-bold px-5 py-2 rounded-xl">Selanjutnya</button>
+            <button id="qSubmitBtn" onclick="santriSubmitExam()" class="hidden bg-amber-500 text-slate-950 font-extrabold text-xs px-5 py-2.5 rounded-xl shadow">Submit Selesai</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- ==================== TAB 5: DIROSAH & MATERI ==================== -->
-    <div id="tab-materi" class="tab-content">
-      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mb-6">
-        <h3 class="font-bold text-slate-800 text-lg mb-1">Materi Dirosah & PDF Kitab</h3>
-        <p class="text-xs text-slate-500 mb-4">Unduh dan pelajari materi dirosah santri Ar Royyan</p>
-
-        <div class="grid md:grid-cols-2 gap-4">
-          <!-- Material Item 1 -->
-          <div class="p-4 rounded-xl border border-slate-200 hover:border-emerald-500 transition flex items-start space-x-3">
-            <div class="w-10 h-10 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
-              <i data-lucide="file-text" class="w-5 h-5"></i>
+      <!-- SANTRI TAB 4: SYAHRIYAH -->
+      <div id="s-syahriyah" class="tab-pane">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-slate-800 text-lg">Status Pembayaran Syahriyah Saya</h3>
+              <p class="text-xs text-slate-500">Iuran bulanan Pesantren Mahasiswa Ar Royyan (Rp 350.000)</p>
             </div>
-            <div class="flex-1">
-              <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded uppercase">Fiqih • PDF</span>
-              <h4 class="font-bold text-slate-800 text-sm mt-1">Kitab Fathul Qarib — Bab Thaharah & Shalat.pdf</h4>
-              <p class="text-xs text-slate-500 mt-1">Diunggah oleh Ust. Dr. Abdullah • Ukuran: 2.4 MB</p>
-              <a href="#" onclick="alert('Simulasi mengunduh PDF Kitab Fathul Qarib')" class="inline-flex items-center space-x-1 text-xs font-bold text-emerald-700 hover:underline mt-2">
-                <i data-lucide="download" class="w-3.5 h-3.5"></i><span>Unduh Kitab PDF</span>
-              </a>
-            </div>
+            <button onclick="openSantriPayModal()" class="bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow flex items-center space-x-1.5">
+              <i data-lucide="upload-cloud" class="w-4 h-4"></i><span>Upload Transfer</span>
+            </button>
           </div>
 
-          <!-- Material Item 2 -->
-          <div class="p-4 rounded-xl border border-slate-200 hover:border-emerald-500 transition flex items-start space-x-3">
-            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-              <i data-lucide="headphones" class="w-5 h-5"></i>
-            </div>
-            <div class="flex-1">
-              <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded uppercase">Nahwu • Audio</span>
-              <h4 class="font-bold text-slate-800 text-sm mt-1">Rekaman Syarah Al-Ajurrumiyyah (Bab Fi'il).mp3</h4>
-              <p class="text-xs text-slate-500 mt-1">Diunggah oleh Ust. Ahmad Hidayat • Durasi: 42 Menit</p>
-              <audio controls class="w-full mt-2 h-8">
-                <source src="" type="audio/mpeg">
-                Browser Anda tidak mendukung pemutar audio.
-              </audio>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== TAB 6: AKADEMIK (KRS/KHS) ==================== -->
-    <div id="tab-akademik" class="tab-content">
-      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-        <h3 class="font-bold text-slate-800 text-lg mb-1">Kartu Hasil Studi (KHS) Dirosah</h3>
-        <p class="text-xs text-slate-500 mb-5">Laporan hasil evaluasi belajar dirosah per semester</p>
-
-        <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl mb-5 flex items-center justify-between">
-          <div>
-            <span class="text-xs text-emerald-800 font-semibold block">Indeks Prestasi Dirosah (IPD):</span>
-            <span class="text-2xl font-extrabold text-emerald-950">3.85 / 4.00</span>
-          </div>
-          <span class="badge badge-lunas text-xs px-3 py-1">PREDIKAT: MUMTAZ</span>
-        </div>
-
-        <div class="overflow-x-auto">
           <table class="w-full text-xs text-left">
-            <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[11px]">
+            <thead class="bg-slate-100 font-bold uppercase">
               <tr>
-                <th class="p-3 rounded-l-lg">Kode</th>
-                <th class="p-3">Mata Dirosah</th>
-                <th class="p-3">SKS</th>
-                <th class="p-3">Nilai Formatif</th>
-                <th class="p-3">Nilai CBT</th>
-                <th class="p-3 rounded-r-lg">Nilai Akhir</th>
+                <th class="p-3">Periode</th>
+                <th class="p-3">Nominal</th>
+                <th class="p-3">Status Verifikasi Admin</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
               <tr>
-                <td class="p-3 font-semibold">DIR-01</td>
-                <td class="p-3 font-bold text-slate-800">Fiqih (Fathul Qarib)</td>
-                <td class="p-3">3</td>
-                <td class="p-3 font-semibold">90.00</td>
-                <td class="p-3 font-semibold">88.00</td>
-                <td class="p-3 font-extrabold text-emerald-700">A (Mumtaz)</td>
+                <td class="p-3 font-bold text-slate-800">Agustus 2026</td>
+                <td class="p-3 font-semibold">Rp 350.000</td>
+                <td class="p-3"><span id="santriPayStatusBadge" class="badge badge-lunas">LUNAS</span></td>
               </tr>
               <tr>
-                <td class="p-3 font-semibold">DIR-02</td>
-                <td class="p-3 font-bold text-slate-800">Hadits (Riyadhus Shalihin)</td>
-                <td class="p-3">2</td>
-                <td class="p-3 font-semibold">95.00</td>
-                <td class="p-3 font-semibold">92.00</td>
-                <td class="p-3 font-extrabold text-emerald-700">A (Mumtaz)</td>
-              </tr>
-              <tr>
-                <td class="p-3 font-semibold">DIR-03</td>
-                <td class="p-3 font-bold text-slate-800">Nahwu (Al-Ajurrumiyyah)</td>
-                <td class="p-3">2</td>
-                <td class="p-3 font-semibold">85.00</td>
-                <td class="p-3 font-semibold">82.00</td>
-                <td class="p-3 font-extrabold text-emerald-700">A- (Jayyid Jiddan)</td>
+                <td class="p-3 font-bold text-slate-800">Juli 2026</td>
+                <td class="p-3 font-semibold">Rp 350.000</td>
+                <td class="p-3"><span class="badge badge-lunas">LUNAS</span></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+
+      <!-- SANTRI TAB 5: KITAB & MATERI -->
+      <div id="s-materi" class="tab-pane">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-slate-800 text-lg mb-4">Kitab Dirosah & File Audio Syarah</h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="p-4 border rounded-xl flex items-start space-x-3">
+              <div class="w-10 h-10 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center font-bold">PDF</div>
+              <div>
+                <h4 class="font-bold text-slate-800 text-sm">Kitab Fathul Qarib (Thaharah & Shalat).pdf</h4>
+                <p class="text-xs text-slate-500 mt-1">Pengampu: Ust. Dr. Abdullah • 2.4 MB</p>
+                <button onclick="alert('Mengunduh PDF Kitab Fathul Qarib...')" class="mt-2 text-xs font-bold text-emerald-700 hover:underline flex items-center space-x-1">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i><span>Unduh PDF</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="p-4 border rounded-xl flex items-start space-x-3">
+              <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">MP3</div>
+              <div>
+                <h4 class="font-bold text-slate-800 text-sm">Rekaman Dirosah Nahwu Bab Fi'il.mp3</h4>
+                <p class="text-xs text-slate-500 mt-1">Pengampu: Ust. Ahmad Hidayat • 42 Menit</p>
+                <audio controls class="w-full mt-2 h-7">
+                  <source src="" type="audio/mpeg">
+                </audio>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SANTRI TAB 6: KHS -->
+      <div id="s-khs" class="tab-pane">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-slate-800 text-lg mb-3">Kartu Hasil Studi (KHS) Dirosah Wustho</h3>
+          <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl mb-4 flex items-center justify-between">
+            <div>
+              <span class="text-xs text-emerald-800 font-semibold block">Indeks Prestasi Dirosah (IPD):</span>
+              <span class="text-2xl font-extrabold text-emerald-950">3.85 / 4.00</span>
+            </div>
+            <span class="badge badge-lunas px-3 py-1">PREDIKAT: MUMTAZ</span>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- SANTRI MOBILE BOTTOM NAVBAR -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-2 py-1.5 z-40 shadow-lg">
+      <div class="grid grid-cols-5 text-center">
+        <button onclick="switchSantriTab('s-dash')" class="s-nav-btn active text-emerald-800 py-1 flex flex-col items-center">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-0.5">Beranda</span>
+        </button>
+        <button onclick="switchSantriTab('s-presensi')" class="s-nav-btn text-slate-500 py-1 flex flex-col items-center">
+          <i data-lucide="user-check" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-0.5">Presensi</span>
+        </button>
+        <button onclick="switchSantriTab('s-cbt')" class="s-nav-btn text-slate-500 py-1 flex flex-col items-center">
+          <i data-lucide="file-spreadsheet" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-0.5">Ujian</span>
+        </button>
+        <button onclick="switchSantriTab('s-syahriyah')" class="s-nav-btn text-slate-500 py-1 flex flex-col items-center">
+          <i data-lucide="credit-card" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-0.5">Syahriyah</span>
+        </button>
+        <button onclick="switchSantriTab('s-materi')" class="s-nav-btn text-slate-500 py-1 flex flex-col items-center">
+          <i data-lucide="book-open" class="w-5 h-5"></i><span class="text-[10px] font-semibold mt-0.5">Kitab</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- 👳 ROLE 2: USTADZ PORTAL (TEACHER MANAGEMENT & DIROSAH CONTROL)           -->
+  <!-- ========================================================================= -->
+  <div id="role-ustadz-view" class="role-view pb-12">
+    <!-- Ustadz Header Banner -->
+    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white px-4 py-5 shadow-inner">
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-3.5">
+          <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white font-extrabold flex items-center justify-center text-xl border-2 border-slate-600 shadow-md">
+            AB
+          </div>
+          <div>
+            <h2 class="font-extrabold text-xl text-white">Ust. Dr. Abdullah, M.Ag</h2>
+            <p class="text-xs text-slate-300 font-medium">NIP: 19850401 • Pengampu Dirosah Fiqih & Hadits</p>
+            <span class="inline-block mt-1 text-[10px] font-bold bg-blue-950 border border-blue-600/50 px-2 py-0.5 rounded text-blue-200">
+              Pengampu Utama Pesantren Mahasiswa Ar Royyan
+            </span>
+          </div>
+        </div>
+
+        <div class="hidden sm:block text-right">
+          <span class="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold px-3 py-1.5 rounded-xl block">
+            <i data-lucide="book-marked" class="w-3.5 h-3.5 inline mr-1"></i> Kelas Aktif: 2 Dirosah
+          </span>
+        </div>
+      </div>
     </div>
 
-    <!-- ==================== TAB 7: PANEL KELOLA ADMIN & USTADZ ==================== -->
-    <div id="tab-adminPanel" class="tab-content">
-      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mb-6">
-        <h3 class="font-bold text-slate-800 text-lg mb-1">Panel Kelola Verifikasi Admin</h3>
-        <p class="text-xs text-slate-500 mb-5">Verifikasi pembayaran syahriyah santri yang di-upload</p>
+    <main class="max-w-6xl mx-auto px-4 py-6">
+      
+      <!-- Teacher Top Navigation Tabs -->
+      <div class="flex items-center space-x-2 border-b border-slate-200 mb-6 pb-2">
+        <button onclick="switchUstadzTab('u-presensi')" class="u-tab-btn active px-4 py-2 rounded-xl text-sm font-extrabold text-blue-900 bg-blue-100 flex items-center space-x-2">
+          <i data-lucide="clipboard-check" class="w-4 h-4"></i><span>Input Presensi Dirosah</span>
+        </button>
+        <button onclick="switchUstadzTab('u-cbt')" class="u-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+          <i data-lucide="file-plus" class="w-4 h-4"></i><span>Buat Soal CBT</span>
+        </button>
+        <button onclick="switchUstadzTab('u-materi')" class="u-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+          <i data-lucide="upload" class="w-4 h-4"></i><span>Upload Kitab / PDF</span>
+        </button>
+        <button onclick="switchUstadzTab('u-nilai')" class="u-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+          <i data-lucide="award" class="w-4 h-4"></i><span>Input Nilai Dirosah</span>
+        </button>
+      </div>
 
-        <div class="overflow-x-auto">
+      <!-- USTADZ TAB 1: INPUT PRESENSI MASSAL SANTRI -->
+      <div id="u-presensi" class="tab-pane active">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 border-b pb-4">
+            <div>
+              <span class="text-[10px] font-extrabold text-blue-700 uppercase bg-blue-50 px-2 py-0.5 rounded">Dirosah Subuh Hari Ini</span>
+              <h3 class="font-bold text-slate-800 text-lg mt-1">Input Presensi Class: Fathul Qarib (Fiqih Ibadah)</h3>
+              <p class="text-xs text-slate-500">Tanggal: 24 Agustus 2026 • Jumlah Santri Terdaftar: 5 Santri Demo</p>
+            </div>
+            <button onclick="saveUstadzAttendance()" class="bg-blue-700 hover:bg-blue-800 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl shadow transition flex items-center space-x-2">
+              <i data-lucide="save" class="w-4 h-4"></i><span>Simpan Presensi Kelas</span>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase">
+                <tr>
+                  <th class="p-3">NIM / Santri</th>
+                  <th class="p-3">Kamar</th>
+                  <th class="p-3">Status Kehadiran</th>
+                  <th class="p-3">Catatan Ustadz</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">2026001 - Ahmad Fauzi</td>
+                  <td class="p-3 text-slate-500">Al-Farabi 04</td>
+                  <td class="p-3">
+                    <select class="bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold rounded-lg p-1 text-xs">
+                      <option value="hadir" selected>HADIR</option>
+                      <option value="izin">IZIN</option>
+                      <option value="sakit">SAKIT</option>
+                      <option value="alpa">ALPA</option>
+                    </select>
+                  </td>
+                  <td class="p-3"><input type="text" placeholder="Catatan..." class="border rounded p-1 text-xs w-full"></td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">2026002 - Muhammad Rahmat</td>
+                  <td class="p-3 text-slate-500">Al-Farabi 02</td>
+                  <td class="p-3">
+                    <select class="bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold rounded-lg p-1 text-xs">
+                      <option value="hadir" selected>HADIR</option>
+                      <option value="izin">IZIN</option>
+                      <option value="sakit">SAKIT</option>
+                      <option value="alpa">ALPA</option>
+                    </select>
+                  </td>
+                  <td class="p-3"><input type="text" placeholder="Catatan..." class="border rounded p-1 text-xs w-full"></td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">2026003 - Farhan Abdullah</td>
+                  <td class="p-3 text-slate-500">Ibn Sina 01</td>
+                  <td class="p-3">
+                    <select class="bg-blue-50 text-blue-800 border border-blue-300 font-bold rounded-lg p-1 text-xs">
+                      <option value="hadir">HADIR</option>
+                      <option value="izin" selected>IZIN</option>
+                      <option value="sakit">SAKIT</option>
+                      <option value="alpa">ALPA</option>
+                    </select>
+                  </td>
+                  <td class="p-3"><input type="text" value="Izin Tugas Kampus" class="border rounded p-1 text-xs w-full"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- USTADZ TAB 2: BUAT SOAL UJIAN CBT -->
+      <div id="u-cbt" class="tab-pane">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-slate-800 text-lg mb-4">Buat Ujian CBT Baru</h3>
+          <form onsubmit="saveNewExam(event)" class="space-y-4 max-w-2xl">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Mata Dirosah</label>
+              <select class="w-full border rounded-xl p-2.5 text-xs font-semibold">
+                <option>Fathul Qarib (Fiqih Ibadah)</option>
+                <option>Riyadhus Shalihin (Hadits)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Judul Ujian Evaluasi</label>
+              <input type="text" placeholder="misal: Ujian Evaluasi Bab Thaharah & Shalat" required class="w-full border rounded-xl p-2.5 text-xs">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Durasi (Menit)</label>
+                <input type="number" value="60" class="w-full border rounded-xl p-2.5 text-xs font-bold">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Passing Grade Nilai</label>
+                <input type="number" value="70" class="w-full border rounded-xl p-2.5 text-xs font-bold">
+              </div>
+            </div>
+
+            <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs px-5 py-3 rounded-xl shadow">
+              Publikasikan Ujian CBT Ke Santri
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- USTADZ TAB 3: UPLOAD MATERI -->
+      <div id="u-materi" class="tab-pane">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-slate-800 text-lg mb-4">Upload Kitab Dirosah / File Audio</h3>
+          <form onsubmit="saveNewMaterial(event)" class="space-y-4 max-w-2xl">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Judul Materi / Kitab</label>
+              <input type="text" placeholder="misal: Kitab Fathul Qarib Bab Muamalah.pdf" required class="w-full border rounded-xl p-2.5 text-xs">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Tipe File</label>
+              <select class="w-full border rounded-xl p-2.5 text-xs">
+                <option value="pdf">Document PDF Kitab</option>
+                <option value="audio">Audio Rekaman Syarah (.mp3)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Upload File</label>
+              <input type="file" required class="w-full border p-2 rounded-xl text-xs bg-slate-50">
+            </div>
+            <button type="submit" class="bg-blue-700 text-white font-bold text-xs px-5 py-3 rounded-xl shadow">
+              Upload & Bagikan ke Santri
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- USTADZ TAB 4: INPUT NILAI -->
+      <div id="u-nilai" class="tab-pane">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-slate-800 text-lg mb-4">Input Nilai Formatif & Akhir Dirosah</h3>
+          <p class="text-xs text-slate-500 mb-4">Pengisian nilai santri untuk pembuatan KHS Dirosah</p>
+          <button onclick="alert('Nilai Dirosah disimpan!')" class="bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl">Simpan Semua Nilai</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- ⚙️ ROLE 3: ADMIN SEKRETARIAT & PENGASUH (EXECUTIVE CONTROL DASHBOARD)     -->
+  <!-- ========================================================================= -->
+  <div id="role-admin-view" class="role-view pb-12">
+    <!-- Admin Header Banner -->
+    <div class="bg-gradient-to-r from-amber-950 via-amber-900 to-slate-950 text-white px-4 py-5 shadow-inner">
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-3.5">
+          <div class="w-14 h-14 rounded-2xl bg-amber-600 text-white font-extrabold flex items-center justify-center text-xl border-2 border-amber-400 shadow-md">
+            AR
+          </div>
+          <div>
+            <h2 class="font-extrabold text-xl text-white">Admin Sekretariat & Pengasuhan</h2>
+            <p class="text-xs text-amber-200 font-medium">Control Center Pesantren Mahasiswa Ar Royyan</p>
+            <span class="inline-block mt-1 text-[10px] font-bold bg-amber-900 border border-amber-600 px-2 py-0.5 rounded text-amber-100">
+              Hak Akses Penuh: Keuangan, Verifikasi, & Santri
+            </span>
+          </div>
+        </div>
+
+        <div class="hidden sm:block text-right">
+          <span class="bg-amber-900 border border-amber-700 text-amber-100 text-xs font-bold px-3 py-1.5 rounded-xl block">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 inline mr-1"></i> Mode Admin Operational
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <main class="max-w-6xl mx-auto px-4 py-6">
+
+      <!-- Executive Overview Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-semibold text-slate-500 block">Total Santri Aktif</span>
+          <h3 class="text-2xl font-extrabold text-slate-800 mt-1">95 Santri</h3>
+          <span class="text-[10px] text-emerald-600 font-bold">100% Kamar Terisi</span>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-semibold text-slate-500 block">Syahriyah Terkumpul</span>
+          <h3 class="text-xl font-extrabold text-emerald-700 mt-1">Rp 31.500.000</h3>
+          <span class="text-[10px] text-emerald-600 font-bold">Bulan Agustus 2026</span>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-semibold text-slate-500 block">Verifikasi Menunggu</span>
+          <h3 id="adminPendingCountText" class="text-2xl font-extrabold text-amber-600 mt-1">1 Transfer</h3>
+          <span class="text-[10px] text-amber-700 font-bold">Perlu Approval Admin</span>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <span class="text-xs font-semibold text-slate-500 block">Tingkat Kehadiran</span>
+          <h3 class="text-2xl font-extrabold text-blue-700 mt-1">94.8%</h3>
+          <span class="text-[10px] text-slate-500 font-bold">Rekap Dirosah Subuh/Isya</span>
+        </div>
+      </div>
+
+      <!-- Admin Navigation Tabs -->
+      <div class="flex items-center space-x-2 border-b border-slate-200 mb-6 pb-2">
+        <button onclick="switchAdminTab('a-verifikasi')" class="a-tab-btn active px-4 py-2 rounded-xl text-sm font-extrabold text-amber-900 bg-amber-100 flex items-center space-x-2">
+          <i data-lucide="check-square" class="w-4 h-4"></i><span>Verifikasi Transfer Syahriyah</span>
+        </button>
+        <button onclick="switchAdminTab('a-santri')" class="a-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+          <i data-lucide="users" class="w-4 h-4"></i><span>Data Santri & Kamar</span>
+        </button>
+        <button onclick="switchAdminTab('a-jadwal')" class="a-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
+          <i data-lucide="calendar" class="w-4 h-4"></i><span>Kelola Jadwal Dirosah</span>
+        </button>
+      </div>
+
+      <!-- ADMIN TAB 1: VERIFIKASI PEMBAYARAN SYAHRIYAH -->
+      <div id="a-verifikasi" class="tab-pane active">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-slate-800 text-lg">Daftar Bukti Transfer Masuk Santri</h3>
+              <p class="text-xs text-slate-500">Periksa bukti foto transfer dan setujui untuk memperbarui status Syahriyah</p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase">
+                <tr>
+                  <th class="p-3">Santri / NIM</th>
+                  <th class="p-3">Periode Bulan</th>
+                  <th class="p-3">Nominal</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-right">Aksi Persetujuan Admin</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr id="adminRowFauzi">
+                  <td class="p-3">
+                    <span class="font-bold text-slate-800 block">Ahmad Fauzi (2026001)</span>
+                    <span class="text-[10px] text-slate-500">Kamar Al-Farabi 04</span>
+                  </td>
+                  <td class="p-3 font-semibold">Agustus 2026</td>
+                  <td class="p-3 font-bold text-slate-800">Rp 350.000</td>
+                  <td class="p-3"><span id="adminFauziStatusBadge" class="badge badge-menunggu">MENUNGGU VERIFIKASI</span></td>
+                  <td class="p-3 text-right space-x-1.5">
+                    <button onclick="adminApproveFauzi()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold px-3 py-1.5 rounded-lg shadow text-xs">
+                      ✓ Approve (Lunas)
+                    </button>
+                    <button onclick="adminRejectFauzi()" class="bg-rose-600 hover:bg-rose-700 text-white font-extrabold px-3 py-1.5 rounded-lg shadow text-xs">
+                      ✕ Tolak
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="p-3">
+                    <span class="font-bold text-slate-800 block">Muhammad Rahmat (2026002)</span>
+                    <span class="text-[10px] text-slate-500">Kamar Al-Farabi 02</span>
+                  </td>
+                  <td class="p-3 font-semibold">Agustus 2026</td>
+                  <td class="p-3 font-bold text-slate-800">Rp 350.000</td>
+                  <td class="p-3"><span class="badge badge-lunas">LUNAS VERIFIED</span></td>
+                  <td class="p-3 text-right text-slate-400 font-semibold text-[11px]">Disetujui 22 Aug</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN TAB 2: DATA SANTRI -->
+      <div id="a-santri" class="tab-pane">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-800 text-lg">Master Data Santri Ar Royyan</h3>
+            <button onclick="alert('Form Tambah Santri Baru')" class="bg-amber-600 text-white font-bold text-xs px-4 py-2 rounded-xl shadow">
+              + Tambah Santri Baru
+            </button>
+          </div>
+
           <table class="w-full text-xs text-left">
-            <thead class="bg-slate-100 text-slate-700 uppercase font-bold text-[11px]">
+            <thead class="bg-slate-100 font-bold uppercase">
               <tr>
-                <th class="p-3 rounded-l-lg">Santri</th>
-                <th class="p-3">Bulan</th>
-                <th class="p-3">Nominal</th>
+                <th class="p-3">NIM</th>
+                <th class="p-3">Nama Santri</th>
+                <th class="p-3">Kamar</th>
+                <th class="p-3">Angkatan</th>
                 <th class="p-3">Status</th>
-                <th class="p-3 rounded-r-lg text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody id="adminPayTableBody" class="divide-y divide-slate-100">
+            <tbody class="divide-y divide-slate-100">
               <tr>
-                <td class="p-3 font-bold text-slate-800">Ahmad Fauzi (2026001)</td>
-                <td class="p-3 font-semibold">Agustus 2026</td>
-                <td class="p-3 font-semibold">Rp 350.000</td>
-                <td class="p-3"><span id="adminPayStatusBadge" class="badge badge-menunggu">MENUNGGU VERIFIKASI</span></td>
-                <td class="p-3 text-right space-x-1">
-                  <button onclick="approvePayment()" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3 py-1.5 rounded-lg text-[11px]">Approve</button>
-                  <button onclick="rejectPayment()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-lg text-[11px]">Tolak</button>
-                </td>
+                <td class="p-3 font-bold">2026001</td>
+                <td class="p-3 font-semibold text-slate-800">Ahmad Fauzi</td>
+                <td class="p-3">Al-Farabi 04</td>
+                <td class="p-3">2026</td>
+                <td class="p-3"><span class="badge badge-hadir">AKTIFF</span></td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold">2026002</td>
+                <td class="p-3 font-semibold text-slate-800">Muhammad Rahmat</td>
+                <td class="p-3">Al-Farabi 02</td>
+                <td class="p-3">2026</td>
+                <td class="p-3"><span class="badge badge-hadir">AKTIFF</span></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-    </div>
 
-  </main>
-
-  <!-- MOBILE BOTTOM NAVIGATION BAR -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-2 py-1.5 z-40 shadow-lg">
-    <div class="grid grid-cols-5 text-center">
-      <button onclick="switchTab('dashboard')" class="mobile-nav-btn active text-emerald-800 py-1 flex flex-col items-center">
-        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-        <span class="text-[10px] font-semibold mt-0.5">Beranda</span>
-      </button>
-      <button onclick="switchTab('presensi')" class="mobile-nav-btn text-slate-500 py-1 flex flex-col items-center">
-        <i data-lucide="user-check" class="w-5 h-5"></i>
-        <span class="text-[10px] font-semibold mt-0.5">Presensi</span>
-      </button>
-      <button onclick="switchTab('ujian')" class="mobile-nav-btn text-slate-500 py-1 flex flex-col items-center">
-        <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
-        <span class="text-[10px] font-semibold mt-0.5">Ujian CBT</span>
-      </button>
-      <button onclick="switchTab('keuangan')" class="mobile-nav-btn text-slate-500 py-1 flex flex-col items-center">
-        <i data-lucide="credit-card" class="w-5 h-5"></i>
-        <span class="text-[10px] font-semibold mt-0.5">Syahriyah</span>
-      </button>
-      <button onclick="switchTab('materi')" class="mobile-nav-btn text-slate-500 py-1 flex flex-col items-center">
-        <i data-lucide="book-open" class="w-5 h-5"></i>
-        <span class="text-[10px] font-semibold mt-0.5">Dirosah</span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- UPLOAD PAYMENT MODAL -->
-  <div id="paymentModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl animate-fadeIn">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-        <h3 class="font-bold text-slate-800 text-base">Upload Bukti Transfer Syahriyah</h3>
-        <button onclick="closePaymentModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      <!-- ADMIN TAB 3: JADWAL -->
+      <div id="a-jadwal" class="tab-pane">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-slate-800 text-lg mb-4">Kelola Jadwal & Ruang Dirosah</h3>
+          <p class="text-xs text-slate-500 mb-4">Pengaturan alokasi waktu dan Ustadz pengampu dirosah</p>
+          <button onclick="alert('Jadwal Dirosah berhasil diperbarui!')" class="bg-amber-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl">Simpan Perubahan Jadwal</button>
+        </div>
       </div>
 
-      <form onsubmit="submitPayment(event)" class="space-y-4">
+    </main>
+  </div>
+
+
+  <!-- ==================== UPLOAD PAYMENT MODAL (FOR SANTRI) ==================== -->
+  <div id="santriPayModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+      <div class="flex items-center justify-between border-b pb-3 mb-4">
+        <h3 class="font-bold text-slate-800 text-base">Upload Bukti Transfer Syahriyah</h3>
+        <button onclick="closeSantriPayModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form onsubmit="submitSantriPayment(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Periode Bulan</label>
-          <select id="payMonth" class="w-full text-xs p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          <select id="payMonthSelect" class="w-full text-xs p-2.5 rounded-xl border">
             <option value="Agustus 2026">Agustus 2026 (Rp 350.000)</option>
             <option value="September 2026">September 2026 (Rp 350.000)</option>
           </select>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Upload Foto / Bukti Struk Transfer</label>
-          <input type="file" accept="image/*" required class="w-full text-xs p-2 rounded-xl border border-slate-300 bg-slate-50">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Foto Struk Transfer</label>
+          <input type="file" accept="image/*" required class="w-full text-xs p-2 border rounded-xl bg-slate-50">
         </div>
 
-        <div class="pt-2">
-          <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-xs shadow transition">
-            Kirim Bukti Pembayaran
-          </button>
-        </div>
+        <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-xs shadow">
+          Kirim Bukti Ke Admin
+        </button>
       </form>
     </div>
   </div>
 
-  <!-- CONFIG SUPABASE MODAL -->
-  <div id="configModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-        <h3 class="font-bold text-slate-800 text-base">Konfigurasi Supabase DB</h3>
-        <button onclick="toggleConfigModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
 
-      <p class="text-xs text-slate-500 mb-4">Secara bawaan aplikasi berjalan dalam <strong>Demo Mode</strong>. Masukkan URL & Key Supabase Anda untuk mengaktifkan koneksi live DB.</p>
-
-      <div class="space-y-3">
-        <div>
-          <label class="block text-[11px] font-bold text-slate-700 mb-1">SUPABASE URL</label>
-          <input id="spUrl" type="url" placeholder="https://xyz.supabase.co" class="w-full text-xs p-2.5 rounded-xl border border-slate-300">
-        </div>
-        <div>
-          <label class="block text-[11px] font-bold text-slate-700 mb-1">SUPABASE ANON KEY</label>
-          <input id="spKey" type="text" placeholder="eyJhY..." class="w-full text-xs p-2.5 rounded-xl border border-slate-300">
-        </div>
-
-        <button onclick="saveSupabaseConfig()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold py-2.5 rounded-xl shadow">
-          Simpan & Hubungkan
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- JAVASCRIPT LOGIC & CBT ENGINE -->
+  <!-- JAVASCRIPT ROLE ENGINE & INTERACTIVE CONTROLLERS -->
   <script>
-    // Initial State & Data
-    let currentRole = 'santri';
-    let currentTab = 'dashboard';
-    
-    // CBT Question Set
-    const cbtQuestions = [
+    let activeRole = 'santri';
+    let cbtTimerInt = null;
+    let cbtQIndex = 0;
+    let cbtAnswers = {};
+
+    const cbtQuestionsData = [
       {
         q: "Apakah hukum wudhu bagi orang yang hendak melaksanakan Shalat Fardhu menurut kesepakatan fuqaha dalam Fathul Qarib?",
         options: ["Wajib secara mutlak", "Sunnah Muakkad", "Makruh jika sudah bersuci", "Mubah"],
@@ -791,28 +858,50 @@
       }
     ];
 
-    let currentQIndex = 0;
-    let selectedAnswers = {};
-    let timerInterval = null;
-
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
     });
 
-    // Navigation Switcher
-    function switchTab(tabId) {
-      currentTab = tabId;
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.getElementById('tab-' + tabId).classList.add('active');
+    // ================= MAIN ROLE SWITCHER =================
+    function switchRole(role) {
+      activeRole = role;
+      document.querySelectorAll('.role-view').forEach(el => el.classList.remove('active'));
+      document.getElementById(`role-${role}-view`).classList.add('active');
 
-      // Desktop tab highlight
-      document.querySelectorAll('.nav-tab-btn').forEach(btn => {
-        btn.classList.remove('text-emerald-800', 'bg-emerald-100');
+      const header = document.getElementById('mainHeader');
+      const brandIconBg = document.getElementById('brandIconBg');
+      const badge = document.getElementById('roleBadgeHeader');
+
+      if (role === 'santri') {
+        header.className = 'bg-emerald-900 text-white sticky top-0 z-50 shadow-md transition-colors duration-300';
+        brandIconBg.className = 'w-10 h-10 rounded-xl bg-emerald-700/80 border border-emerald-500/30 flex items-center justify-center shadow-inner';
+        badge.className = 'bg-emerald-800 border border-emerald-600 text-emerald-100 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase';
+        badge.innerText = 'SANTRI PORTAL';
+      } else if (role === 'ustadz') {
+        header.className = 'bg-slate-900 text-white sticky top-0 z-50 shadow-md transition-colors duration-300';
+        brandIconBg.className = 'w-10 h-10 rounded-xl bg-blue-600 border border-blue-400/30 flex items-center justify-center shadow-inner';
+        badge.className = 'bg-blue-900 border border-blue-600 text-blue-100 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase';
+        badge.innerText = 'USTADZ PORTAL';
+      } else if (role === 'admin') {
+        header.className = 'bg-amber-950 text-white sticky top-0 z-50 shadow-md transition-colors duration-300';
+        brandIconBg.className = 'w-10 h-10 rounded-xl bg-amber-700 border border-amber-500/30 flex items-center justify-center shadow-inner';
+        badge.className = 'bg-amber-900 border border-amber-600 text-amber-100 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase';
+        badge.innerText = 'ADMIN CONTROL CENTER';
+      }
+
+      lucide.createIcons();
+    }
+
+    // ================= SANTRI TAB CONTROLLERS =================
+    function switchSantriTab(tabId) {
+      document.querySelectorAll('#role-santri-view .tab-pane').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+
+      document.querySelectorAll('.s-tab-btn').forEach(btn => {
+        btn.classList.remove('text-emerald-800', 'bg-emerald-100', 'font-extrabold');
         btn.classList.add('text-slate-600');
       });
-      
-      // Mobile nav button highlight
-      document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+      document.querySelectorAll('.s-nav-btn').forEach(btn => {
         btn.classList.remove('text-emerald-800');
         btn.classList.add('text-slate-500');
       });
@@ -820,193 +909,162 @@
       lucide.createIcons();
     }
 
-    // Role Switcher
-    function switchRole(role) {
-      currentRole = role;
-      const avatar = document.getElementById('userAvatar');
-      const name = document.getElementById('userName');
-      const sub = document.getElementById('userSub');
-      const adminBtn = document.getElementById('adminTabBtn');
-
-      if (role === 'santri') {
-        avatar.innerText = 'AF';
-        avatar.className = 'w-12 h-12 rounded-full bg-amber-500 text-white font-extrabold flex items-center justify-center text-lg border-2 border-emerald-400 shadow';
-        name.innerText = 'Ahmad Fauzi';
-        sub.innerText = 'NIM: 2026001 • Kamar Al-Farabi 04 • Angkatan 2026';
-        adminBtn.classList.add('hidden');
-      } else if (role === 'ustadz') {
-        avatar.innerText = 'AB';
-        avatar.className = 'w-12 h-12 rounded-full bg-blue-600 text-white font-extrabold flex items-center justify-center text-lg border-2 border-emerald-400 shadow';
-        name.innerText = 'Ust. Dr. Abdullah, M.Ag';
-        sub.innerText = 'NIP: 19850401 • Pengampu Fiqih & Hadits';
-        adminBtn.classList.remove('hidden');
-      } else if (role === 'admin') {
-        avatar.innerText = 'AR';
-        avatar.className = 'w-12 h-12 rounded-full bg-rose-600 text-white font-extrabold flex items-center justify-center text-lg border-2 border-emerald-400 shadow';
-        name.innerText = 'Admin Sekretariat Pesantren';
-        sub.innerText = 'Pengasuhan & Keuangan Ar Royyan';
-        adminBtn.classList.remove('hidden');
-      }
+    function doSantriSelfAttendance() {
+      alert('Presensi Berhasil! Kehadiran Ahmad Fauzi di Dirosah Fathul Qarib telah terverifikasi.');
+      switchSantriTab('s-presensi');
     }
 
-    // Presensi Mandiri
-    function doSelfAttendance() {
-      const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-      const tbody = document.getElementById('attendanceTableBody');
-      const newRow = `
-        <tr class="bg-emerald-50/60">
-          <td class="p-3 font-semibold">${today}</td>
-          <td class="p-3 font-bold text-slate-800">Fathul Qarib (Fiqih Subuh)</td>
-          <td class="p-3 text-slate-500">${new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})} WIB</td>
-          <td class="p-3"><span class="badge badge-hadir">HADIR (PRESENSI)</span></td>
-          <td class="p-3 text-slate-500">Selfie & Location Verified</td>
-        </tr>
-      `;
-      tbody.insertAdjacentHTML('afterbegin', newRow);
-      alert('Presensi Berhasil! Kehadiran Anda hari ini telah tercatat.');
-      switchTab('presensi');
+    function openSantriPayModal() { document.getElementById('santriPayModal').classList.remove('hidden'); }
+    function closeSantriPayModal() { document.getElementById('santriPayModal').classList.add('hidden'); }
+
+    function submitSantriPayment(e) {
+      e.preventDefault();
+      const month = document.getElementById('payMonthSelect').value;
+      
+      document.getElementById('santriDashPayBadge').className = 'badge badge-menunggu';
+      document.getElementById('santriDashPayBadge').innerText = 'MENUNGGU VERIFIKASI';
+      
+      document.getElementById('santriPayStatusBadge').className = 'badge badge-menunggu';
+      document.getElementById('santriPayStatusBadge').innerText = 'MENUNGGU VERIFIKASI';
+
+      document.getElementById('adminFauziStatusBadge').className = 'badge badge-menunggu';
+      document.getElementById('adminFauziStatusBadge').innerText = 'MENUNGGU VERIFIKASI';
+
+      closeSantriPayModal();
+      alert(`Bukti transfer untuk ${month} berhasil dikirim! Menunggu konfirmasi dari Admin Sekretariat.`);
+      switchSantriTab('s-syahriyah');
     }
 
-    // CBT Exam Simulator Engine
-    function startCBTExam() {
-      document.getElementById('cbtListView').classList.add('hidden');
-      document.getElementById('cbtExamActiveView').classList.remove('hidden');
-      currentQIndex = 0;
-      selectedAnswers = {};
-      renderQuestion();
-      startTimer(3600);
+    // ================= SANTRI CBT SIMULATOR ENGINE =================
+    function startSantriExam() {
+      document.getElementById('santriCbtListView').classList.add('hidden');
+      document.getElementById('santriCbtExamBox').classList.remove('hidden');
+      cbtQIndex = 0;
+      cbtAnswers = {};
+      renderSantriQ();
+      
+      let sec = 3600;
+      clearInterval(cbtTimerInt);
+      cbtTimerInt = setInterval(() => {
+        sec--;
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        document.getElementById('cbtTimerText').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        if (sec <= 0) { clearInterval(cbtTimerInt); santriSubmitExam(); }
+      }, 1000);
       lucide.createIcons();
     }
 
-    function renderQuestion() {
-      const q = cbtQuestions[currentQIndex];
-      document.getElementById('cbtQuestionNumber').innerText = `Soal ${currentQIndex + 1} dari ${cbtQuestions.length}`;
-      document.getElementById('cbtQuestionText').innerText = q.q;
+    function renderSantriQ() {
+      const q = cbtQuestionsData[cbtQIndex];
+      document.getElementById('qNumText').innerText = `Soal ${cbtQIndex + 1} dari ${cbtQuestionsData.length}`;
+      document.getElementById('qContentText').innerText = q.q;
 
-      const container = document.getElementById('cbtOptionsContainer');
-      container.innerHTML = '';
+      const optsDiv = document.getElementById('qOptionsDiv');
+      optsDiv.innerHTML = '';
 
       q.options.forEach((opt, idx) => {
-        const isChecked = selectedAnswers[currentQIndex] === idx;
-        const optionEl = document.createElement('div');
-        optionEl.className = `p-3.5 rounded-xl border cursor-pointer font-medium text-xs md:text-sm transition flex items-center space-x-3 ${isChecked ? 'bg-emerald-50 border-emerald-600 text-emerald-900 font-bold shadow-sm' : 'bg-slate-50 border-slate-200 hover:bg-slate-100 text-slate-700'}`;
-        optionEl.onclick = () => selectOption(idx);
-        optionEl.innerHTML = `
-          <div class="w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center text-xs font-bold ${isChecked ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-600'}">
+        const isChecked = cbtAnswers[cbtQIndex] === idx;
+        const div = document.createElement('div');
+        div.className = `p-3 rounded-xl border cursor-pointer font-medium text-xs transition flex items-center space-x-3 ${isChecked ? 'bg-emerald-50 border-emerald-600 text-emerald-900 font-bold' : 'bg-slate-50 border-slate-200 hover:bg-slate-100'}`;
+        div.onclick = () => { cbtAnswers[cbtQIndex] = idx; renderSantriQ(); };
+        div.innerHTML = `
+          <div class="w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${isChecked ? 'bg-emerald-600 text-white' : 'bg-white text-slate-600'}">
             ${String.fromCharCode(65 + idx)}
           </div>
           <span>${opt}</span>
         `;
-        container.appendChild(optionEl);
+        optsDiv.appendChild(div);
       });
 
-      // Controls State
-      document.getElementById('prevBtn').style.visibility = currentQIndex === 0 ? 'hidden' : 'visible';
-      if (currentQIndex === cbtQuestions.length - 1) {
-        document.getElementById('nextBtn').classList.add('hidden');
-        document.getElementById('submitExamBtn').classList.remove('hidden');
+      document.getElementById('qPrevBtn').style.visibility = cbtQIndex === 0 ? 'hidden' : 'visible';
+      if (cbtQIndex === cbtQuestionsData.length - 1) {
+        document.getElementById('qNextBtn').classList.add('hidden');
+        document.getElementById('qSubmitBtn').classList.remove('hidden');
       } else {
-        document.getElementById('nextBtn').classList.remove('hidden');
-        document.getElementById('submitExamBtn').classList.add('hidden');
+        document.getElementById('qNextBtn').classList.remove('hidden');
+        document.getElementById('qSubmitBtn').classList.add('hidden');
       }
     }
 
-    function selectOption(optIndex) {
-      selectedAnswers[currentQIndex] = optIndex;
-      renderQuestion();
-    }
+    function santriPrevQ() { if (cbtQIndex > 0) { cbtQIndex--; renderSantriQ(); } }
+    function santriNextQ() { if (cbtQIndex < cbtQuestionsData.length - 1) { cbtQIndex++; renderSantriQ(); } }
 
-    function prevQuestion() {
-      if (currentQIndex > 0) { currentQIndex--; renderQuestion(); }
-    }
-
-    function nextQuestion() {
-      if (currentQIndex < cbtQuestions.length - 1) { currentQIndex++; renderQuestion(); }
-    }
-
-    function startTimer(seconds) {
-      let rem = seconds;
-      clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        rem--;
-        const m = Math.floor(rem / 60);
-        const s = rem % 60;
-        document.getElementById('cbtTimer').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        if (rem <= 0) {
-          clearInterval(timerInterval);
-          finishCBTExam();
-        }
-      }, 1000);
-    }
-
-    function finishCBTExam() {
-      clearInterval(timerInterval);
+    function santriSubmitExam() {
+      clearInterval(cbtTimerInt);
       let correct = 0;
-      cbtQuestions.forEach((q, idx) => {
-        if (selectedAnswers[idx] === q.answer) correct++;
+      cbtQuestionsData.forEach((q, idx) => { if (cbtAnswers[idx] === q.answer) correct++; });
+      const score = (correct / cbtQuestionsData.length) * 100;
+      alert(`Ujian CBT Selesai!\n\nJumlah Benar: ${correct} / ${cbtQuestionsData.length}\nNilai: ${score}.00 / 100\nStatus: ${score >= 70 ? 'LULUS (MUMTAZ)' : 'TIDAK LULUS'}`);
+      
+      document.getElementById('santriCbtExamBox').classList.add('hidden');
+      document.getElementById('santriCbtListView').classList.remove('hidden');
+    }
+
+    // ================= USTADZ TAB CONTROLLERS =================
+    function switchUstadzTab(tabId) {
+      document.querySelectorAll('#role-ustadz-view .tab-pane').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+
+      document.querySelectorAll('.u-tab-btn').forEach(btn => {
+        btn.classList.remove('text-blue-900', 'bg-blue-100', 'font-extrabold');
+        btn.classList.add('text-slate-600');
       });
-
-      const score = (correct / cbtQuestions.length) * 100;
-      alert(`Ujian Selesai!\n\nJumlah Soal Benar: ${correct} dari ${cbtQuestions.length}\nNilai Akhir: ${score}.00 / 100\nStatus: ${score >= 70 ? 'LULUS (MUMTAZ)' : 'TIDAK LULUS'}`);
-      
-      document.getElementById('cbtExamActiveView').classList.add('hidden');
-      document.getElementById('cbtListView').classList.remove('hidden');
+      lucide.createIcons();
     }
 
-    // Payment Logic
-    function openPaymentModal() { document.getElementById('paymentModal').classList.remove('hidden'); }
-    function closePaymentModal() { document.getElementById('paymentModal').classList.add('hidden'); }
-    
-    function submitPayment(e) {
+    function saveUstadzAttendance() {
+      alert('Presensi Kelas Dirosah berhasil disimpan oleh Ust. Dr. Abdullah!');
+    }
+
+    function saveNewExam(e) {
       e.preventDefault();
-      const month = document.getElementById('payMonth').value;
-      const badge = document.getElementById('dashPayBadge');
-      const payBadge = document.getElementById('payAgustusBadge');
-      
-      badge.className = 'badge badge-menunggu';
-      badge.innerText = 'MENUNGGU VERIFIKASI';
-      
-      if (payBadge) {
-        payBadge.className = 'badge badge-menunggu';
-        payBadge.innerText = 'MENUNGGU VERIFIKASI';
-      }
-
-      closePaymentModal();
-      alert(`Bukti transfer untuk bulan ${month} berhasil di-upload dan sedang dalam proses verifikasi Admin Sekretariat!`);
-      switchTab('keuangan');
+      alert('Ujian CBT Baru berhasil dibuat dan dipublikasikan ke Santri!');
     }
 
-    function approvePayment() {
-      document.getElementById('dashPayBadge').className = 'badge badge-lunas';
-      document.getElementById('dashPayBadge').innerText = 'LUNAS';
-      document.getElementById('adminPayStatusBadge').className = 'badge badge-lunas';
-      document.getElementById('adminPayStatusBadge').innerText = 'VERIFIED / LUNAS';
-      alert('Pembayaran Syahriyah Santri berhasil disetujui (Approved)!');
+    function saveNewMaterial(e) {
+      e.preventDefault();
+      alert('File Kitab/Audio berhasil di-upload dan tersedia untuk Santri!');
     }
 
-    function rejectPayment() {
-      document.getElementById('dashPayBadge').className = 'badge badge-belum';
-      document.getElementById('dashPayBadge').innerText = 'DITOLAK';
-      document.getElementById('adminPayStatusBadge').className = 'badge badge-belum';
-      document.getElementById('adminPayStatusBadge').innerText = 'DITOLAK';
-      alert('Pembayaran Syahriyah Santri telah ditolak.');
+    // ================= ADMIN TAB CONTROLLERS =================
+    function switchAdminTab(tabId) {
+      document.querySelectorAll('#role-admin-view .tab-pane').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+
+      document.querySelectorAll('.a-tab-btn').forEach(btn => {
+        btn.classList.remove('text-amber-900', 'bg-amber-100', 'font-extrabold');
+        btn.classList.add('text-slate-600');
+      });
+      lucide.createIcons();
     }
 
-    // Config Modal
-    function toggleConfigModal() {
-      document.getElementById('configModal').classList.toggle('hidden');
+    function adminApproveFauzi() {
+      document.getElementById('santriDashPayBadge').className = 'badge badge-lunas';
+      document.getElementById('santriDashPayBadge').innerText = 'LUNAS';
+
+      document.getElementById('santriPayStatusBadge').className = 'badge badge-lunas';
+      document.getElementById('santriPayStatusBadge').innerText = 'LUNAS';
+
+      document.getElementById('adminFauziStatusBadge').className = 'badge badge-lunas';
+      document.getElementById('adminFauziStatusBadge').innerText = 'LUNAS VERIFIED';
+
+      document.getElementById('adminPendingCountText').innerText = '0 Transfer';
+      alert('Persetujuan Berhasil! Status pembayaran Ahmad Fauzi kini resmi LUNAS.');
     }
 
-    function saveSupabaseConfig() {
-      const url = document.getElementById('spUrl').value;
-      const key = document.getElementById('spKey').value;
-      if (url && key) {
-        document.getElementById('connStatusText').innerText = 'Live Supabase DB';
-        toggleConfigModal();
-        alert('Koneksi Supabase berhasil disimpan!');
-      } else {
-        alert('Mohon isi URL dan Anon Key Supabase.');
-      }
+    function adminRejectFauzi() {
+      document.getElementById('santriDashPayBadge').className = 'badge badge-belum';
+      document.getElementById('santriDashPayBadge').innerText = 'DITOLAK';
+
+      document.getElementById('santriPayStatusBadge').className = 'badge badge-belum';
+      document.getElementById('santriPayStatusBadge').innerText = 'DITOLAK';
+
+      document.getElementById('adminFauziStatusBadge').className = 'badge badge-belum';
+      document.getElementById('adminFauziStatusBadge').innerText = 'DITOLAK';
+
+      document.getElementById('adminPendingCountText').innerText = '0 Transfer';
+      alert('Pembayaran ditolak!');
     }
   </script>
 </body>
