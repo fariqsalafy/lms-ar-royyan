@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>PMS Ar Royyan — Santri</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;overscroll-behavior-y:none}
+  body{font-family:'Inter',system-ui,sans-serif;background:#f8fafc;color:#0f172a;line-height:1.5;padding-bottom:80px}
+  .page{display:none;animation:fade .2s ease}
+  .page.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:1rem;padding:1rem;margin-bottom:.75rem;transition:box-shadow .15s}
+  .card:active{box-shadow:0 4px 12px rgba(0,0,0,.06)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1rem;border-radius:.75rem;font-size:.875rem;font-weight:600;border:none;cursor:pointer;width:100%}
+  .btn-primary{background:#1e3a5f;color:#fff}
+  .btn-success{background:#16a34a;color:#fff}
+  .btn-outline{background:#fff;color:#334155;border:1px solid #cbd5e1}
+  .badge{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.2rem .5rem;border-radius:9999px;display:inline-block}
+  .badge-hadir{background:#dcfce7;color:#166534}
+  .badge-izin{background:#fef9c3;color:#854d0e}
+  .badge-sakit{background:#fef3c7;color:#92400e}
+  .badge-alpa{background:#fee2e2;color:#991b1b}
+  .badge-lunas{background:#dcfce7;color:#166534}
+  .badge-menunggu{background:#e0e7ff;color:#3730a3}
+  .badge-belum{background:#f1f5f9;color:#475569}
+  .input{width:100%;border:1px solid #e2e8f0;border-radius:.75rem;padding:.75rem .875rem;font-size:.875rem;background:#fff}
+  .input:focus{outline:none;border-color:#1e3a5f;box-shadow:0 0 0 3px rgba(30,58,95,.12)}
+  .tabbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;display:flex;justify-content:space-around;padding:.5rem 0 calc(.5rem + env(safe-area-inset-bottom));z-index:50;backdrop-filter:blur(8px);background:rgba(255,255,255,.92)}
+  .tab-item{display:flex;flex-direction:column;align-items:center;gap:.25rem;font-size:.65rem;color:#94a3b8;padding:.25rem .5rem;border-radius:.75rem;cursor:pointer;border:none;background:none;min-width:60px}
+  .tab-item.active{color:#1e3a5f;font-weight:600}
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(100px);background:#1e3a5f;color:#fff;padding:.75rem 1.25rem;border-radius:.75rem;font-size:.875rem;z-index:100;opacity:0;transition:all .25s ease;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .sheett{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:70;display:none;align-items:flex-end;justify-content:center}
+  .sheett.open{display:flex}
+  .sheet{background:#fff;border-radius:1.25rem 1.25rem 0 0;padding:1.25rem;width:100%;max-height:85vh;overflow-y:auto;animation:slideUp .25s ease}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .time-pill{font-variant-numeric:tabular-nums;font-weight:700;color:#64748b;font-size:.8rem}
+  .section-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin:1rem 0 .5rem;padding:0 .25rem}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage" class="page active min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1e3a5f] to-[#2c5282] p-4">
+  <div class="w-full max-w-sm">
+    <div class="text-center mb-8">
+      <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg">🕌</div>
+      <h1 class="text-2xl font-bold text-white mb-1">PMS Ar Royyan</h1>
+      <p class="text-white/70 text-sm">Pesantren Mahasiswa Ar Royyan</p>
+    </div>
+    <form onsubmit="event.preventDefault();doLogin()" class="bg-white rounded-2xl p-6 shadow-2xl space-y-4">
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">NIS / Email</label>
+        <input id="loginEmail" type="text" class="input" placeholder="2025001" value="2025001"/>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Password</label>
+        <input id="loginPass" type="password" class="input" placeholder="••••••••" value="santri"/>
+      </div>
+      <button type="submit" class="btn btn-primary">Masuk</button>
+    </form>
+    <div class="mt-6 flex gap-2">
+      <button onclick="fillLogin('2025001','santri');doLogin()" class="flex-1 bg-white/10 backdrop-blur text-white rounded-xl py-2.5 text-sm font-medium border border-white/20">Santri</button>
+      <button onclick="fillLogin('wali','wali');doLogin()" class="flex-1 bg-white/10 backdrop-blur text-white rounded-xl py-2.5 text-sm font-medium border border-white/20">Wali</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="page">
+  <!-- TOP -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200 px-4 py-3">
+    <div class="flex items-center justify-between max-w-lg mx-auto">
+      <div>
+        <p class="text-xs text-slate-500">Assalamualaikum,</p>
+        <h1 id="headerName" class="text-base font-bold text-slate-800 leading-tight">Ahmad Zaki</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="showToast('Notifikasi: Ujian FIQH besok')" class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center relative">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">2</span>
+        </button>
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">AZ</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGES -->
+  <main class="max-w-lg mx-auto px-4 pt-4">
+
+    <!-- DASHBOARD -->
+    <div id="page-dashboard" class="page active">
+      <!-- Jadwal Hari Ini -->
+      <div class="section-title">📅 Jadwal Dirosah Hari Ini</div>
+      <div id="todaySchedule" class="space-y-2"></div>
+
+      <!-- Ringkasan -->
+      <div class="grid grid-cols-3 gap-2 mt-4">
+        <div class="card text-center py-3">
+          <p class="text-xl font-bold text-green-600" id="dashHadir">0</p>
+          <p class="text-xs text-slate-500">Hadir</p>
+        </div>
+        <div class="card text-center py-3">
+          <p class="text-xl font-bold text-amber-600" id="dashIzin">0</p>
+          <p class="text-xs text-slate-500">Izin/Sakit</p>
+        </div>
+        <div class="card text-center py-3">
+          <p class="text-xl font-bold text-red-600" id="dashAlpa">0</p>
+          <p class="text-xs text-slate-500">Alpa</p>
+        </div>
+      </div>
+
+      <!-- Ujian -->
+      <div class="section-title">🧪 Ujian Mendatang</div>
+      <div id="upcomingExams" class="space-y-2"></div>
+
+      <!-- Keuangan -->
+      <div class="section-title">💰 Keuangan</div>
+      <div id="financeSummary" class="space-y-2"></div>
+
+      <!-- Materi -->
+      <div class="section-title">📚 Materi Terbaru</div>
+      <div id="recentMaterials" class="space-y-2"></div>
+
+      <div class="h-6"></div>
+    </div>
+
+    <!-- PRESENSI -->
+    <div id="page-presensi" class="page">
+      <div class="section-title">✅ Absensi Hari Ini</div>
+      <div id="presensiList" class="space-y-2"></div>
+      <div class="mt-4">
+        <button onclick="submitPresensi()" class="btn btn-success">📤 Kirim Presensi</button>
+      </div>
+      <div class="section-title mt-6">📈 Riwayat Minggu Ini</div>
+      <div id="weeklyPresensi" class="space-y-2"></div>
+      <div class="h-6"></div>
+    </div>
+
+    <!-- JADWAL -->
+    <div id="page-jadwal" class="page">
+      <div class="section-title">📅 Jadwal Minggu Ini</div>
+      <div id="weeklySchedule" class="space-y-3"></div>
+      <div class="h-6"></div>
+    </div>
+
+    <!-- UJIAN -->
+    <div id="page-ujian" class="page">
+      <div id="examList" class="space-y-3"></div>
+      <div id="activeExam" class="hidden">
+        <div class="card">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h3 id="examTitle" class="font-bold text-slate-800">UTS FIQH - Ibadah</h3>
+              <p id="examSub" class="text-xs text-slate-500">Soal 1 dari 5 • 90 Menit</p>
+            </div>
+            <div class="text-right">
+              <p class="text-xs text-slate-500">Sisa Waktu</p>
+              <p id="examTimer" class="text-lg font-bold text-[#1e3a5f] tabular-nums">15:00</p>
+            </div>
+          </div>
+          <div class="h-2 bg-slate-200 rounded-full overflow-hidden mb-4">
+            <div id="examProgress" class="h-full bg-blue-600 rounded-full transition-all" style="width:20%"></div>
+          </div>
+          <div id="questionBox" class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <p id="questionText" class="font-medium text-slate-800 mb-3"></p>
+            <div id="optionsBox" class="space-y-2"></div>
+          </div>
+          <div class="flex gap-2 mt-4">
+            <button onclick="prevQ()" class="flex-1 btn btn-outline">←</button>
+            <button onclick="nextQ()" class="flex-1 btn btn-primary">→</button>
+          </div>
+        </div>
+        <button onclick="submitExam()" class="btn btn-success mt-3">📤 Kirim Ujian</button>
+      </div>
+      <div class="h-6"></div>
+    </div>
+
+    <!-- KEUANGAN -->
+    <div id="page-keuangan" class="page">
+      <div class="section-title">💰 Tagihan Saya</div>
+      <div id="billsList" class="space-y-2"></div>
+      <div class="section-title mt-6">💳 Riwayat Pembayaran</div>
+      <div id="payHistory" class="space-y-2"></div>
+      <div class="h-6"></div>
+    </div>
+
+    <!-- MATERI -->
+    <div id="page-materi" class="page">
+      <div class="section-title">📚 Materi</div>
+      <div id="materialsList" class="space-y-2"></div>
+      <div class="section-title mt-6">📝 Tugas</div>
+      <div id="assignmentsList" class="space-y-2"></div>
+      <div class="h-6"></div>
+    </div>
+
+    <!-- PROFIL -->
+    <div id="page-profil" class="page">
+      <div class="card flex items-center gap-3">
+        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl">AZ</div>
+        <div class="flex-1">
+          <p id="profileName" class="font-bold text-slate-800">Ahmad Zaki</p>
+          <p class="text-xs text-slate-500">NIS: 2025001 • Kelas A</p>
+          <p class="text-xs text-slate-500">Tahfidz 1 • Ganjil 2025/26</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">📊 Ringkasan Akademik</div>
+        <div class="grid grid-cols-2 gap-3 text-center">
+          <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">IPS</p><p class="text-2xl font-bold text-green-600">3.75</p></div>
+          <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">IPK</p><p class="text-2xl font-bold text-blue-600">3.82</p></div>
+          <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Presensi</p><p class="text-2xl font-bold text-amber-600">92%</p></div>
+          <div class="p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Peringkat</p><p class="text-2xl font-bold text-purple-600">#3</p></div>
+        </div>
+      </div>
+      <button onclick="doLogout()" class="btn btn-outline text-red-600 border-red-200 mt-4">🚪 Keluar</button>
+      <div class="h-6"></div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM TAB BAR -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab-item active" onclick="switchTab('dashboard')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="tab-item" onclick="switchTab('presensi')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span>Absensi</span>
+    </button>
+    <button class="tab-item" onclick="switchTab('ujian')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span>Ujian</span>
+    </button>
+    <button class="tab-item" onclick="switchTab('materi')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Materi</span>
+    </button>
+    <button class="tab-item" onclick="switchTab('profil')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profil</span>
+    </button>
+  </nav>
+</div>
+
+<!-- EXAM SHEET -->
+<div id="examSheet" class="sheett" onclick="if(event.target===this)closeExam()">
+  <div class="sheet">
+    <div class="flex items-center justify-between mb-4">
+      <h3 id="sheetExamTitle" class="font-bold text-slate-800">UTS FIQH - Ibadah</h3>
+      <button onclick="closeExam()" class="text-slate-400 text-xl leading-none">✕</button>
+    </div>
+    <div class="mb-4">
+      <div class="flex justify-between text-xs text-slate-500 mb-1">
+        <span id="sheetExamInfo">Soal 1 dari 5</span>
+        <span id="sheetExamTimer" class="font-bold text-[#1e3a5f] tabular-nums">15:00</span>
+      </div>
+      <div class="h-2 bg-slate-200 rounded-full overflow-hidden"><div id="sheetExamProgress" class="h-full bg-blue-600 rounded-full transition-all" style="width:20%"></div></div>
+    </div>
+    <div id="sheetQuestionBox" class="p-4 bg-slate-50 rounded-xl border border-slate-200 mb-4">
+      <p id="sheetQuestionText" class="font-medium text-slate-800 mb-3"></p>
+      <div id="sheetOptionsBox" class="space-y-2"></div>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="sheetPrev()" class="flex-1 btn btn-outline">← Sebelum</button>
+      <button onclick="sheetNext()" class="flex-1 btn btn-primary">Selanjutnya →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<script>
+const state={
+  user:null,
+  tab:'dashboard',
+  currentExam:null,
+  qIndex:0,
+  answers:{},
+  examTime:15*60,
+  examTimer:null,
+  // santri view
+  schedule:[
+    {time:'07:00',end:'08:30',matpel:'FIQH - Thoharah',ustadz:'Ustadz Abdullah',room:'Ruang A1',hadir:true},
+    {time:'08:45',end:'10:15',matpel:'ARAB - Nahwu',ustadz:'Ustadzah Fatimah',room:'Ruang A2',hadir:true},
+    {time:'10:30',end:'12:00',matpel:'TAHFIDZ - Juz 30',ustadz:'Ustadz Muhammad',room:'Halaqah 1',hadir:false},
+  ],
+  presensiToday:[
+    {time:'07:00',matpel:'FIQH - Thoharah',status:'hadir',ket:''},
+    {time:'08:45',matpel:'ARAB - Nahwu',status:'hadir',ket:''},
+    {time:'10:30',matpel:'TAHFIDZ - Juz 30',status:'belum',ket:''},
+  ],
+  weekly:[
+    {day:'Sen',hadir:true},{day:'Sel',hadir:true},{day:'Rab',hadir:true},{day:'Kam',hadir:false},{day:'Jum',hadir:true}
+  ],
+  exams:[
+    {id:1,title:'UTS FIQH - Ibadah',matpel:'FIQH',soal:5,waktu:'90 menit',mulai:'27 Jan 09:00',status:'aktif'},
+    {id:2,title:'UAS TAHFIDZ Juz 30',matpel:'TAHFIDZ',soal:10,waktu:'120 menit',mulai:'03 Feb 08:00',status:'belum'},
+  ],
+  bills:[
+    {jenis:'SPP',periode:'Januari 2025',nominal:500000,jatuh:'31 Jan 2025',status:'menunggu'},
+    {jenis:'Seragam',periode:'2024/2025',nominal:350000,jatuh:'15 Jan 2025',status:'belum_bayar'},
+    {jenis:'Kegiatan',periode:'Maulid',nominal:150000,jatuh:'20 Jan 2025',status:'lunas'},
+  ],
+  payments:[
+    {jenis:'SPP',periode:'Desember 2024',nominal:500000,tgl:'02 Jan 2025',status:'lunas'},
+    {jenis:'Kegiatan',periode:'Hafalan',nominal:150000,tgl:'20 Des 2024',status:'lunas'},
+  ],
+  materials:[
+    {judul:'FIQH: Hukum Air Mutlak',jenis:'PDF',waktu:'2 jam lalu'},
+    {judul:'ARAB: Isim Mutsanna',jenis:'Video',waktu:'1 hari lalu'},
+  ],
+  assignments:[
+    {judul:'Latihan Isim Mutsanna',matpel:'ARAB',deadline:'28 Jan',nilai:null},
+    {judul:'Ringkasan Bab Thoharah',matpel:'FIQH',deadline:'30 Jan',nilai:85},
+  ],
+  questions:[
+    {text:'Apa syarat sah wudhu?',opts:['Beragama Islam','Berusia dewasa','Niat','Semua di atas'],ans:3},
+    {text:'Berapa kali membaca Bismillah sebelum wudhu?',opts:['0 kali','1 kali','2 kali','3 kali'],ans:0},
+    {text:'Apa yang membatalkan wudhu?',opts:['Tidur','Buang air','Berbicara','Semua di atas'],ans:3},
+    {text:'Sunnah membasuh muka berapa kali?',opts:['1x','2x','3x','Sesuai kemampuan'],ans:2},
+    {text:'Bacaan saat menyiram air ke kepala?',opts:['Al-Fatihah','Doa setelah wudhu','Tidak ada bacaan khusus','Ay Kursi'],ans:2},
+  ]
+};
+
+function fillLogin(u,p){document.getElementById('loginEmail').value=u;document.getElementById('loginPass').value=p}
+function doLogin(){
+  const e=document.getElementById('loginEmail').value||'2025001';
+  document.getElementById('loginPage').classList.remove('active');
+  document.getElementById('app').classList.add('active');
+  document.getElementById('headerName').textContent='Ahmad Zaki';
+  document.getElementById('profileName').textContent='Ahmad Zaki';
+  renderDashboard();
+  renderPresensi();
+  renderWeekly();
+  renderExams();
+  renderJadwal();
+  renderKeuangan();
+  renderMateri();
+  showToast('Selamat datang, Ahmad Zaki!');
+}
+function doLogout(){
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('loginPage').classList.add('active');
+  document.getElementById('loginEmail').value='';
+  document.getElementById('loginPass').value='';
+}
+
+function switchTab(t){
+  state.tab=t;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+t)?.classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-item').forEach(b=>{if(b.textContent.trim().toLowerCase().includes(t||''))b.classList.add('active')});
+}
+
+function renderDashboard(){
+  const hadir=state.presensiToday.filter(p=>p.status==='hadir').length;
+  const izin=state.presensiToday.filter(p=>p.status==='izin'||p.status==='sakit').length;
+  const alpa=state.presensiToday.filter(p=>p.status==='alpa').length;
+  document.getElementById('dashHadir').textContent=hadir;
+  document.getElementById('dashIzin').textContent=izin;
+  document.getElementById('dashAlpa').textContent=alpa;
+
+  document.getElementById('todaySchedule').innerHTML=state.schedule.map(s=>`
+    <div class="card flex items-center gap-3">
+      <div class="text-center w-16 flex-shrink-0">
+        <p class="text-sm font-bold text-slate-800">${s.time}</p>
+        <p class="text-xs text-slate-400">${s.end}</p>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-semibold text-sm text-slate-800 truncate">${s.matpel}</p>
+        <p class="text-xs text-slate-500">${s.ustadz} • ${s.room}</p>
+      </div>
+      <span class="badge ${s.hadir?'badge-hadir':'badge-belum'}">${s.hadir?'Hadir':'Belum'}</span>
+    </div>
+  `).join('');
+
+  document.getElementById('upcomingExams').innerHTML=state.exams.filter(e=>e.status==='aktif').map(e=>`
+    <div class="card">
+      <div class="flex items-center justify-between mb-1">
+        <p class="font-semibold text-sm">${e.title}</p>
+        <span class="badge badge-berlangsung">Berlangsung</span>
+      </div>
+      <p class="text-xs text-slate-500">${e.soal} Soal • ${e.waktu} • Mulai ${e.mulai}</p>
+      <button onclick="openExam(${e.id})" class="btn btn-primary mt-3">📝 Kerjakan Ujian</button>
+    </div>
+  `).join('') || '<p class="text-sm text-slate-500 text-center py-4">Tidak ada ujian aktif</p>';
+
+  document.getElementById('financeSummary').innerHTML=state.bills.filter(b=>b.status!=='lunas').map(b=>`
+    <div class="card flex items-center justify-between">
+      <div class="flex-1 min-w-0">
+        <p class="font-semibold text-sm text-slate-800">${b.jenis}</p>
+        <p class="text-xs text-slate-500">${b.periode} • Jatuh tempo ${b.jatuh}</p>
+      </div>
+      <div class="text-right flex-shrink-0 ml-3">
+        <p class="font-bold text-sm text-red-600">Rp ${(b.nominal).toLocaleString('id-ID')}</p>
+        <span class="badge ${b.status==='menunggu'?'badge-menunggu':'badge-belum'}">${b.status==='menunggu'?'Menunggu':'Belum'}</span>
+      </div>
+    </div>
+  `).join('') || '<p class="text-sm text-slate-500 text-center py-4">Semua tagihan lunas</p>';
+
+  document.getElementById('recentMaterials').innerHTML=state.materials.map(m=>`
+    <div class="card flex items-center justify-between">
+      <div class="flex-1 min-w-0">
+        <p class="font-medium text-sm text-slate-800 truncate">${m.judul}</p>
+        <p class="text-xs text-slate-500">${m.jenis} • ${m.waktu}</p>
+      </div>
+      <button class="btn-primary px-3 py-1.5 rounded-lg text-xs ml-3 flex-shrink-0">Buka</button>
+    </div>
+  `).join('');
+}
+
+function renderPresensi(){
+  document.getElementById('presensiList').innerHTML=state.presensiToday.map((p,i)=>`
+    <div class="card">
+      <div class="flex items-center justify-between mb-2">
+        <div>
+          <p class="font-medium text-sm text-slate-800">${p.matpel}</p>
+          <p class="text-xs text-slate-500">${p.time}</p>
+        </div>
+        <select onchange="updatePresensi(${i},'status',this.value)" class="input text-xs" style="width:auto;padding:.5rem .75rem">
+          <option value="hadir" ${p.status==='hadir'?'selected':''}>Hadir</option>
+          <option value="izin" ${p.status==='izin'?'selected':''}>Izin</option>
+          <option value="sakit" ${p.status==='sakit'?'selected':''}>Sakit</option>
+          <option value="alpa" ${p.status==='alpa'?'selected':''}>Alpa</option>
+          <option value="belum" ${p.status==='belum'?'selected':''}>Belum</option>
+        </select>
+      </div>
+      <input type="text" placeholder="Keterangan (opsional)" value="${p.ket}" onchange="updatePresensi(${i},'ket',this.value)" class="input text-xs" style="padding:.5rem .75rem"/>
+    </div>
+  `).join('');
+
+  document.getElementById('weeklyPresensi').innerHTML=state.weekly.map((w,i)=>`
+    <div class="card flex items-center justify-between py-2.5">
+      <span class="text-sm font-medium">${w.day}</span>
+      <span class="badge ${w.hadir?'badge-hadir':'badge-alpa'}">${w.hadir?'Hadir':'Tidak Hadir'}</span>
+    </div>
+  `).join('');
+}
+
+function updatePresensi(i,f,v){state.presensiToday[i][f]=v;renderPresensi();renderDashboard();}
+function submitPresensi(){showToast('Presensi berhasil dikirim ✓');}
+
+function renderWeekly(){
+  document.getElementById('weeklySchedule').innerHTML=state.schedule.map(s=>`
+    <div class="card">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="time-pill">${s.time}-${s.end}</div>
+        <span class="badge ${s.hadir?'badge-hadir':'badge-belum'}">${s.hadir?'Hadir':'Belum'}</span>
+      </div>
+      <p class="font-semibold text-sm text-slate-800">${s.matpel}</p>
+      <p class="text-xs text-slate-500">${s.ustadz} • ${s.room}</p>
+    </div>
+  `).join('');
+}
+
+function renderExams(){
+  document.getElementById('examList').innerHTML=state.exams.map(e=>`
+    <div class="card">
+      <div class="flex items-center justify-between mb-2">
+        <p class="font-bold text-slate-800">${e.title}</p>
+        <span class="badge ${e.status==='aktif'?'badge-berlangsung':'badge-belum'}">${e.status==='aktif'?'Berlangsung':'Belum Mulai'}</span>
+      </div>
+      <div class="text-xs text-slate-500 mb-3">${e.soal} Soal • ${e.waktu} • Mulai ${e.mulai}</div>
+      ${e.status==='aktif'?`<button onclick="openExam(${e.id})" class="btn btn-primary">📝 Kerjakan Ujian</button>`:`<button onclick="showToast('Ujian belum dimulai')" class="btn btn-outline" disabled>Belum Dimulai</button>`}
+    </div>
+  `).join('');
+}
+
+function openExam(id){
+  const e=state.exams.find(x=>x.id===id);if(!e)return;
+  state.currentExam=e;state.qIndex=0;state.answers={};state.examTime=e.waktu.includes('120')?120*60:90*60;
+  document.getElementById('activeExam').classList.remove('hidden');
+  document.getElementById('examList').classList.add('hidden');
+  renderSheetQ();startTimer();
+}
+function closeExam(){
+  document.getElementById('examSheet').classList.remove('open');
+  document.getElementById('activeExam').classList.add('hidden');
+  document.getElementById('examList').classList.remove('hidden');
+  if(state.examTimer){clearInterval(state.examTimer);state.examTimer=null;}
+}
+function renderSheetQ(){
+  const q=state.questions[state.qIndex];
+  document.getElementById('sheetQuestionText').textContent=(state.qIndex+1)+'. '+q.text;
+  document.getElementById('sheetOptionsBox').innerHTML=q.opts.map((o,i)=>`
+    <label class="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-200 cursor-pointer">
+      <input type="radio" name="ans" value="${i}" ${state.answers[state.qIndex]===i?'checked':''} onchange="pickAnswer(${i})" class="w-4 h-4 accent-[#1e3a5f]"/>
+      <span class="text-sm text-slate-700">${String.fromCharCode(65+i)}. ${o}</span>
+    </label>
+  `).join('');
+  document.getElementById('sheetExamInfo').textContent=`Soal ${state.qIndex+1} dari ${state.questions.length}`;
+  document.getElementById('sheetExamProgress').style.width=(state.qIndex+1)/state.questions.length*100+'%';
+}
+function pickAnswer(i){state.answers[state.qIndex]=i;}
+function sheetPrev(){if(state.qIndex>0){state.qIndex--;renderSheetQ();}}
+function sheetNext(){if(state.qIndex<state.questions.length-1){state.qIndex++;renderSheetQ();}}
+function startTimer(){
+  if(state.examTimer)clearInterval(state.examTimer);
+  state.examTimer=setInterval(()=>{
+    if(state.examTime<=0){clearInterval(state.examTimer);showToast('Waktu habis!');submitExam();return;}
+    state.examTime--;const m=Math.floor(state.examTime/60);const s=state.examTime%60;
+    const t=m+':'+(s<10?'0':'')+s;
+    document.getElementById('examTimer').textContent=t;
+    document.getElementById('sheetExamTimer').textContent=t;
+  },1000);
+}
+function submitExam(){
+  if(!confirm('Kirim ujian? Jawaban tidak bisa diubah setelah dikirim.'))return;
+  if(state.examTimer){clearInterval(state.examTimer);state.examTimer=null;}
+  closeExam();
+  const answered=Object.keys(state.answers).length;
+  showToast(`Ujian dikirim! ${answered}/${state.questions.length} soal dijawab`);
+}
+
+function renderJadwal(){/* same as weekly, already rendered */}
+
+function renderKeuangan(){
+  document.getElementById('billsList').innerHTML=state.bills.map(b=>`
+    <div class="card flex items-center justify-between">
+      <div class="flex-1 min-w-0">
+        <p class="font-semibold text-sm text-slate-800">${b.jenis}</p>
+        <p class="text-xs text-slate-500">${b.periode} • Jatuh tempo ${b.jatuh}</p>
+      </div>
+      <div class="text-right flex-shrink-0 ml-3">
+        <p class="font-bold text-sm ${b.status==='lunas'?'text-green-600':'text-red-600'}">Rp ${b.nominal.toLocaleString('id-ID')}</p>
+        <span class="badge ${b.status==='lunas'?'badge-lunas':b.status==='menunggu'?'badge-menunggu':'badge-belum'}">${b.status==='lunas'?'Lunas':b.status==='menunggu'?'Menunggu':'Belum'}</span>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('payHistory').innerHTML=state.payments.map(p=>`
+    <div class="card flex items-center justify-between py-3">
+      <div>
+        <p class="font-medium text-sm text-slate-800">${p.jenis}</p>
+        <p class="text-xs text-slate-500">${p.periode}</p>
+      </div>
+      <div class="text-right">
+        <p class="text-xs text-slate-500">${p.tgl}</p>
+        <span class="badge badge-lunas">Lunas</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderMateri(){
+  document.getElementById('materialsList').innerHTML=state.materials.map(m=>`
+    <div class="card flex items-center justify-between">
+      <div class="flex-1 min-w-0">
+        <p class="font-medium text-sm text-slate-800 truncate">${m.judul}</p>
+        <p class="text-xs text-slate-500">${m.jenis} • ${m.waktu}</p>
+      </div>
+      <button onclick="showToast('Membuka materi...')" class="btn-primary px-3 py-1.5 rounded-lg text-xs ml-3 flex-shrink-0">Buka</button>
+    </div>
+  `).join('');
+
+  document.getElementById('assignmentsList').innerHTML=state.assignments.map(a=>`
+    <div class="card flex items-center justify-between">
+      <div class="flex-1 min-w-0">
+        <p class="font-medium text-sm text-slate-800 truncate">${a.judul}</p>
+        <p class="text-xs text-slate-500">${a.matpel} • Deadline ${a.deadline}</p>
+      </div>
+      <div class="text-right flex-shrink-0 ml-3">
+        ${a.nilai!==null?`<p class="font-bold text-green-600">${a.nilai}</p>`:`<button onclick="showToast('Buka tugas')" class="btn-primary px-3 py-1.5 rounded-lg text-xs">Kerjakan</button>`}
+      </div>
+    </div>
+  `).join('');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+</script>
+</body>
+</html>
