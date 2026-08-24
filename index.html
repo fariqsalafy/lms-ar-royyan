@@ -59,7 +59,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800">
 
-  <!-- ==================== GLOBAL TOP BAR (WITH DISTINCT ROLE SWITCHER) ==================== -->
+  <!-- ==================== GLOBAL TOP BAR ==================== -->
   <header id="mainHeader" class="bg-emerald-900 text-white sticky top-0 z-50 shadow-md transition-colors duration-300">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
       <!-- Logo & Brand -->
@@ -83,8 +83,8 @@
         <div class="flex items-center space-x-1.5 bg-black/20 p-1 rounded-xl border border-white/10">
           <span class="text-[11px] font-bold text-white/80 hidden sm:inline pl-2">Mode Peran:</span>
           <select id="roleSelector" onchange="switchRole(this.value)" class="bg-white text-slate-900 text-xs font-extrabold rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer shadow">
-            <option value="santri" selected>🎓 Santri: Ahmad Fauzi</option>
-            <option value="ustadz">👳 Ustadz: Ust. Dr. Abdullah</option>
+            <option value="santri">🎓 Santri: Ahmad Fauzi</option>
+            <option value="ustadz" selected>👳 Ustadz: Ust. Dr. Abdullah</option>
             <option value="admin">⚙️ Admin: Pengasuh Sekretariat</option>
           </select>
         </div>
@@ -96,7 +96,7 @@
   <!-- ========================================================================= -->
   <!-- 🎓 ROLE 1: SANTRI PORTAL (MOBILE-FIRST APP DESIGN)                       -->
   <!-- ========================================================================= -->
-  <div id="role-santri-view" class="role-view active pb-24 md:pb-12">
+  <div id="role-santri-view" class="role-view pb-24 md:pb-12">
     <!-- Student Header Banner -->
     <div class="bg-gradient-to-r from-emerald-800 to-emerald-700 text-white px-4 py-5 shadow-inner">
       <div class="max-w-6xl mx-auto flex items-center justify-between">
@@ -397,6 +397,37 @@
             </div>
             <span class="badge badge-lunas px-3 py-1">PREDIKAT: MUMTAZ</span>
           </div>
+
+          <table class="w-full text-xs text-left">
+            <thead class="bg-slate-100 font-bold uppercase">
+              <tr>
+                <th class="p-3">Kode</th>
+                <th class="p-3">Mata Dirosah</th>
+                <th class="p-3">SKS</th>
+                <th class="p-3">Nilai Formatif</th>
+                <th class="p-3">Nilai CBT</th>
+                <th class="p-3">Nilai Akhir</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr>
+                <td class="p-3 font-semibold">DIR-01</td>
+                <td class="p-3 font-bold text-slate-800">Fiqih (Fathul Qarib)</td>
+                <td class="p-3">3</td>
+                <td class="p-3">90.00</td>
+                <td class="p-3">88.00</td>
+                <td class="p-3 font-bold text-emerald-700">A (Mumtaz)</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">DIR-02</td>
+                <td class="p-3 font-bold text-slate-800">Hadits (Riyadhus Shalihin)</td>
+                <td class="p-3">2</td>
+                <td class="p-3">95.00</td>
+                <td class="p-3">92.00</td>
+                <td class="p-3 font-bold text-emerald-700">A (Mumtaz)</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -426,48 +457,64 @@
 
 
   <!-- ========================================================================= -->
-  <!-- 👳 ROLE 2: USTADZ PORTAL (TEACHER MANAGEMENT & DIROSAH CONTROL)           -->
+  <!-- 👳 ROLE 2: USTADZ / PENGAJAR PORTAL (HIGHLY ENHANCED & FEATURE-PACKED)   -->
   <!-- ========================================================================= -->
-  <div id="role-ustadz-view" class="role-view pb-12">
+  <div id="role-ustadz-view" class="role-view active pb-16">
     <!-- Ustadz Header Banner -->
-    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white px-4 py-5 shadow-inner">
-      <div class="max-w-6xl mx-auto flex items-center justify-between">
-        <div class="flex items-center space-x-3.5">
-          <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white font-extrabold flex items-center justify-center text-xl border-2 border-slate-600 shadow-md">
+    <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white px-4 py-6 shadow-xl border-b border-blue-900/40">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-center space-x-4">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-700 to-indigo-600 text-white font-extrabold flex items-center justify-center text-2xl border-2 border-blue-400/40 shadow-lg shrink-0">
             AB
           </div>
           <div>
-            <h2 class="font-extrabold text-xl text-white">Ust. Dr. Abdullah, M.Ag</h2>
-            <p class="text-xs text-slate-300 font-medium">NIP: 19850401 • Pengampu Dirosah Fiqih & Hadits</p>
-            <span class="inline-block mt-1 text-[10px] font-bold bg-blue-950 border border-blue-600/50 px-2 py-0.5 rounded text-blue-200">
-              Pengampu Utama Pesantren Mahasiswa Ar Royyan
-            </span>
+            <div class="flex items-center space-x-2">
+              <h2 class="font-extrabold text-2xl text-white">Ust. Dr. Abdullah, M.Ag</h2>
+              <span class="bg-blue-900/80 border border-blue-600 text-blue-200 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase">
+                Dosen Pengampu Dirosah
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 font-medium mt-0.5">NIP: 19850401 • Pengampu Fiqih (Fathul Qarib) & Hadits (Riyadhus Shalihin)</p>
+            <p class="text-[11px] text-slate-400 mt-1">Pesantren Mahasiswa Ar Royyan • Semester Ganjil 2026/2027</p>
           </div>
         </div>
 
-        <div class="hidden sm:block text-right">
-          <span class="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold px-3 py-1.5 rounded-xl block">
-            <i data-lucide="book-marked" class="w-3.5 h-3.5 inline mr-1"></i> Kelas Aktif: 2 Dirosah
-          </span>
+        <!-- Ustadz Quick Performance Stats -->
+        <div class="grid grid-cols-3 gap-2 bg-slate-900/80 p-3 rounded-2xl border border-slate-800 text-center shrink-0">
+          <div class="px-3 border-r border-slate-800">
+            <span class="text-xs text-slate-400 block font-medium">Kelas Pengampu</span>
+            <span class="text-lg font-extrabold text-white">2 Dirosah</span>
+          </div>
+          <div class="px-3 border-r border-slate-800">
+            <span class="text-xs text-slate-400 block font-medium">Kehadiran Santri</span>
+            <span class="text-lg font-extrabold text-emerald-400">96.2%</span>
+          </div>
+          <div class="px-3">
+            <span class="text-xs text-slate-400 block font-medium">Rata-Rata CBT</span>
+            <span class="text-lg font-extrabold text-amber-400">88.5</span>
+          </div>
         </div>
       </div>
     </div>
 
     <main class="max-w-6xl mx-auto px-4 py-6">
       
-      <!-- Teacher Top Navigation Tabs -->
-      <div class="flex items-center space-x-2 border-b border-slate-200 mb-6 pb-2">
-        <button onclick="switchUstadzTab('u-presensi')" class="u-tab-btn active px-4 py-2 rounded-xl text-sm font-extrabold text-blue-900 bg-blue-100 flex items-center space-x-2">
-          <i data-lucide="clipboard-check" class="w-4 h-4"></i><span>Input Presensi Dirosah</span>
+      <!-- Teacher Top Navigation Tabs (Includes KRS Approval & KHS Entry) -->
+      <div class="flex items-center space-x-2 border-b border-slate-200 mb-6 pb-2 overflow-x-auto">
+        <button onclick="switchUstadzTab('u-presensi')" class="u-tab-btn active px-4 py-2.5 rounded-xl text-xs md:text-sm font-extrabold text-blue-900 bg-blue-100 flex items-center space-x-2 shrink-0">
+          <i data-lucide="clipboard-check" class="w-4 h-4"></i><span>Input Presensi Kelas</span>
         </button>
-        <button onclick="switchUstadzTab('u-cbt')" class="u-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
-          <i data-lucide="file-plus" class="w-4 h-4"></i><span>Buat Soal CBT</span>
+        <button onclick="switchUstadzTab('u-krs')" class="u-tab-btn px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2 shrink-0">
+          <i data-lucide="file-check" class="w-4 h-4"></i><span>Persetujuan KRS Santri</span>
         </button>
-        <button onclick="switchUstadzTab('u-materi')" class="u-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
-          <i data-lucide="upload" class="w-4 h-4"></i><span>Upload Kitab / PDF</span>
+        <button onclick="switchUstadzTab('u-khs')" class="u-tab-btn px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2 shrink-0">
+          <i data-lucide="graduation-cap" class="w-4 h-4"></i><span>Kelola KHS & Input Nilai</span>
         </button>
-        <button onclick="switchUstadzTab('u-nilai')" class="u-tab-btn px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2">
-          <i data-lucide="award" class="w-4 h-4"></i><span>Input Nilai Dirosah</span>
+        <button onclick="switchUstadzTab('u-cbt')" class="u-tab-btn px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2 shrink-0">
+          <i data-lucide="file-plus" class="w-4 h-4"></i><span>Bank Soal CBT</span>
+        </button>
+        <button onclick="switchUstadzTab('u-materi')" class="u-tab-btn px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold text-slate-600 hover:bg-slate-100 flex items-center space-x-2 shrink-0">
+          <i data-lucide="upload" class="w-4 h-4"></i><span>Perpustakaan Kitab</span>
         </button>
       </div>
 
@@ -477,63 +524,82 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 border-b pb-4">
             <div>
               <span class="text-[10px] font-extrabold text-blue-700 uppercase bg-blue-50 px-2 py-0.5 rounded">Dirosah Subuh Hari Ini</span>
-              <h3 class="font-bold text-slate-800 text-lg mt-1">Input Presensi Class: Fathul Qarib (Fiqih Ibadah)</h3>
-              <p class="text-xs text-slate-500">Tanggal: 24 Agustus 2026 • Jumlah Santri Terdaftar: 5 Santri Demo</p>
+              <h3 class="font-bold text-slate-800 text-lg mt-1">Presensi Kelas: Fathul Qarib (Fiqih Ibadah)</h3>
+              <p class="text-xs text-slate-500">Tanggal: 24 Agustus 2026 • Ruang Utama Pesantren</p>
             </div>
-            <button onclick="saveUstadzAttendance()" class="bg-blue-700 hover:bg-blue-800 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl shadow transition flex items-center space-x-2">
-              <i data-lucide="save" class="w-4 h-4"></i><span>Simpan Presensi Kelas</span>
-            </button>
+
+            <div class="flex items-center space-x-2">
+              <button onclick="markAllHadir()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-3 py-2 rounded-xl transition">
+                Set All HADIR
+              </button>
+              <button onclick="saveUstadzAttendance()" class="bg-blue-700 hover:bg-blue-800 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl shadow transition flex items-center space-x-2">
+                <i data-lucide="save" class="w-4 h-4"></i><span>Simpan Presensi</span>
+              </button>
+            </div>
           </div>
 
           <div class="overflow-x-auto">
             <table class="w-full text-xs text-left">
               <thead class="bg-slate-100 text-slate-700 font-bold uppercase">
                 <tr>
-                  <th class="p-3">NIM / Santri</th>
+                  <th class="p-3">NIM & Nama Santri</th>
                   <th class="p-3">Kamar</th>
                   <th class="p-3">Status Kehadiran</th>
-                  <th class="p-3">Catatan Ustadz</th>
+                  <th class="p-3">Catatan / Perizinan Ustadz</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100">
+              <tbody id="ustadzPresensiTbody" class="divide-y divide-slate-100">
                 <tr>
                   <td class="p-3 font-bold text-slate-800">2026001 - Ahmad Fauzi</td>
                   <td class="p-3 text-slate-500">Al-Farabi 04</td>
                   <td class="p-3">
-                    <select class="bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold rounded-lg p-1 text-xs">
+                    <select class="u-pres-sel bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold rounded-lg p-1.5 text-xs">
                       <option value="hadir" selected>HADIR</option>
                       <option value="izin">IZIN</option>
                       <option value="sakit">SAKIT</option>
                       <option value="alpa">ALPA</option>
                     </select>
                   </td>
-                  <td class="p-3"><input type="text" placeholder="Catatan..." class="border rounded p-1 text-xs w-full"></td>
+                  <td class="p-3"><input type="text" placeholder="Catatan keaktifan..." class="border rounded-lg p-1.5 text-xs w-full"></td>
                 </tr>
                 <tr>
                   <td class="p-3 font-bold text-slate-800">2026002 - Muhammad Rahmat</td>
                   <td class="p-3 text-slate-500">Al-Farabi 02</td>
                   <td class="p-3">
-                    <select class="bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold rounded-lg p-1 text-xs">
+                    <select class="u-pres-sel bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold rounded-lg p-1.5 text-xs">
                       <option value="hadir" selected>HADIR</option>
                       <option value="izin">IZIN</option>
                       <option value="sakit">SAKIT</option>
                       <option value="alpa">ALPA</option>
                     </select>
                   </td>
-                  <td class="p-3"><input type="text" placeholder="Catatan..." class="border rounded p-1 text-xs w-full"></td>
+                  <td class="p-3"><input type="text" placeholder="Catatan..." class="border rounded-lg p-1.5 text-xs w-full"></td>
                 </tr>
                 <tr>
                   <td class="p-3 font-bold text-slate-800">2026003 - Farhan Abdullah</td>
                   <td class="p-3 text-slate-500">Ibn Sina 01</td>
                   <td class="p-3">
-                    <select class="bg-blue-50 text-blue-800 border border-blue-300 font-bold rounded-lg p-1 text-xs">
+                    <select class="u-pres-sel bg-blue-50 text-blue-800 border border-blue-300 font-bold rounded-lg p-1.5 text-xs">
                       <option value="hadir">HADIR</option>
                       <option value="izin" selected>IZIN</option>
                       <option value="sakit">SAKIT</option>
                       <option value="alpa">ALPA</option>
                     </select>
                   </td>
-                  <td class="p-3"><input type="text" value="Izin Tugas Kampus" class="border rounded p-1 text-xs w-full"></td>
+                  <td class="p-3"><input type="text" value="Izin Tugas Kampus" class="border rounded-lg p-1.5 text-xs w-full"></td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">2026004 - Zaky Mubarok</td>
+                  <td class="p-3 text-slate-500">Ibn Sina 03</td>
+                  <td class="p-3">
+                    <select class="u-pres-sel bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold rounded-lg p-1.5 text-xs">
+                      <option value="hadir" selected>HADIR</option>
+                      <option value="izin">IZIN</option>
+                      <option value="sakit">SAKIT</option>
+                      <option value="alpa">ALPA</option>
+                    </select>
+                  </td>
+                  <td class="p-3"><input type="text" placeholder="Catatan..." class="border rounded-lg p-1.5 text-xs w-full"></td>
                 </tr>
               </tbody>
             </table>
@@ -541,13 +607,111 @@
         </div>
       </div>
 
-      <!-- USTADZ TAB 2: BUAT SOAL UJIAN CBT -->
+      <!-- USTADZ TAB 2: PERSETUJUAN KRS DIROSAH SANTRI -->
+      <div id="u-krs" class="tab-pane">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4 border-b pb-3">
+            <div>
+              <h3 class="font-bold text-slate-800 text-lg">Persetujuan KRS (Kartu Rencana Studi Dirosah)</h3>
+              <p class="text-xs text-slate-500">Verifikasi pengambilan mata dirosah santri bimbingan</p>
+            </div>
+            <button onclick="alert('Semua KRS Santri disetujui!')" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-4 py-2 rounded-xl">
+              ✓ Disetujui Semua KRS
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase">
+                <tr>
+                  <th class="p-3">Santri / NIM</th>
+                  <th class="p-3">Rencana Mata Dirosah</th>
+                  <th class="p-3">Total SKS</th>
+                  <th class="p-3">Status KRS</th>
+                  <th class="p-3 text-right">Aksi Approval</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr id="krsRowFauzi">
+                  <td class="p-3">
+                    <span class="font-bold text-slate-800 block">Ahmad Fauzi (2026001)</span>
+                    <span class="text-[10px] text-slate-500">Dirosah Wustho</span>
+                  </td>
+                  <td class="p-3">
+                    <div class="space-y-1">
+                      <span class="bg-slate-100 px-2 py-0.5 rounded text-[11px] font-semibold text-slate-700 block">• Fiqih (Fathul Qarib) - 3 SKS</span>
+                      <span class="bg-slate-100 px-2 py-0.5 rounded text-[11px] font-semibold text-slate-700 block">• Hadits (Riyadhus Shalihin) - 2 SKS</span>
+                      <span class="bg-slate-100 px-2 py-0.5 rounded text-[11px] font-semibold text-slate-700 block">• Nahwu (Al-Ajurrumiyyah) - 2 SKS</span>
+                    </div>
+                  </td>
+                  <td class="p-3 font-extrabold text-slate-800">7 SKS</td>
+                  <td class="p-3"><span id="krsFauziBadge" class="badge badge-lunas">DISETUJUI</span></td>
+                  <td class="p-3 text-right space-x-1">
+                    <button onclick="approveKrsFauzi()" class="bg-emerald-700 text-white font-bold px-3 py-1 rounded-lg text-[11px]">Approve</button>
+                    <button onclick="rejectKrsFauzi()" class="bg-rose-600 text-white font-bold px-3 py-1 rounded-lg text-[11px]">Revisi</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- USTADZ TAB 3: KELOLA KHS & INPUT NILAI -->
+      <div id="u-khs" class="tab-pane">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 border-b pb-3">
+            <div>
+              <h3 class="font-bold text-slate-800 text-lg">Input Nilai KHS Dirosah (Kartu Hasil Studi)</h3>
+              <p class="text-xs text-slate-500">Pengisian nilai formatif, CBT, dan penentuan IP Dirosah (IPD)</p>
+            </div>
+            <button onclick="saveKhsScores()" class="bg-blue-700 hover:bg-blue-800 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl shadow flex items-center space-x-2">
+              <i data-lucide="check-circle" class="w-4 h-4"></i><span>Simpan KHS & Kalkulasi IPD</span>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 text-slate-700 font-bold uppercase">
+                <tr>
+                  <th class="p-3">Santri</th>
+                  <th class="p-3">Dirosah</th>
+                  <th class="p-3">Nilai Formatif (40%)</th>
+                  <th class="p-3">Nilai CBT (60%)</th>
+                  <th class="p-3">Nilai Akhir</th>
+                  <th class="p-3">Predikat</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">Ahmad Fauzi</td>
+                  <td class="p-3 font-semibold text-slate-700">Fathul Qarib (Fiqih)</td>
+                  <td class="p-3"><input type="number" id="fauziFormatif" value="90" class="border rounded-lg p-1.5 w-20 text-center font-bold text-xs"></td>
+                  <td class="p-3"><input type="number" id="fauziCbt" value="88" class="border rounded-lg p-1.5 w-20 text-center font-bold text-xs"></td>
+                  <td class="p-3 font-extrabold text-emerald-700 text-sm" id="fauziNilaiAkhir">88.80 (A)</td>
+                  <td class="p-3"><span class="badge badge-hadir">MUMTAZ</span></td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold text-slate-800">Muhammad Rahmat</td>
+                  <td class="p-3 font-semibold text-slate-700">Fathul Qarib (Fiqih)</td>
+                  <td class="p-3"><input type="number" value="85" class="border rounded-lg p-1.5 w-20 text-center font-bold text-xs"></td>
+                  <td class="p-3"><input type="number" value="82" class="border rounded-lg p-1.5 w-20 text-center font-bold text-xs"></td>
+                  <td class="p-3 font-extrabold text-emerald-700 text-sm">83.20 (A-)</td>
+                  <td class="p-3"><span class="badge badge-hadir">JAYYID JIDDAN</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- USTADZ TAB 4: BUAT SOAL UJIAN CBT -->
       <div id="u-cbt" class="tab-pane">
         <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <h3 class="font-bold text-slate-800 text-lg mb-4">Buat Ujian CBT Baru</h3>
+          <h3 class="font-bold text-slate-800 text-lg mb-4">Bank Soal & Pembuat Ujian CBT Baru</h3>
           <form onsubmit="saveNewExam(event)" class="space-y-4 max-w-2xl">
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Mata Dirosah</label>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Mata Dirosah Pengampu</label>
               <select class="w-full border rounded-xl p-2.5 text-xs font-semibold">
                 <option>Fathul Qarib (Fiqih Ibadah)</option>
                 <option>Riyadhus Shalihin (Hadits)</option>
@@ -555,7 +719,7 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Judul Ujian Evaluasi</label>
-              <input type="text" placeholder="misal: Ujian Evaluasi Bab Thaharah & Shalat" required class="w-full border rounded-xl p-2.5 text-xs">
+              <input type="text" placeholder="misal: Ujian Evaluasi Bab Thaharah & Shalat" required class="w-full border rounded-xl p-2.5 text-xs font-semibold">
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
@@ -563,22 +727,22 @@
                 <input type="number" value="60" class="w-full border rounded-xl p-2.5 text-xs font-bold">
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Passing Grade Nilai</label>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Passing Grade Minimum</label>
                 <input type="number" value="70" class="w-full border rounded-xl p-2.5 text-xs font-bold">
               </div>
             </div>
 
-            <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs px-5 py-3 rounded-xl shadow">
+            <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs px-5 py-3 rounded-xl shadow transition">
               Publikasikan Ujian CBT Ke Santri
             </button>
           </form>
         </div>
       </div>
 
-      <!-- USTADZ TAB 3: UPLOAD MATERI -->
+      <!-- USTADZ TAB 5: UPLOAD MATERI -->
       <div id="u-materi" class="tab-pane">
         <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <h3 class="font-bold text-slate-800 text-lg mb-4">Upload Kitab Dirosah / File Audio</h3>
+          <h3 class="font-bold text-slate-800 text-lg mb-4">Perpustakaan Kitab & Upload File Audio</h3>
           <form onsubmit="saveNewMaterial(event)" class="space-y-4 max-w-2xl">
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Judul Materi / Kitab</label>
@@ -599,15 +763,6 @@
               Upload & Bagikan ke Santri
             </button>
           </form>
-        </div>
-      </div>
-
-      <!-- USTADZ TAB 4: INPUT NILAI -->
-      <div id="u-nilai" class="tab-pane">
-        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <h3 class="font-bold text-slate-800 text-lg mb-4">Input Nilai Formatif & Akhir Dirosah</h3>
-          <p class="text-xs text-slate-500 mb-4">Pengisian nilai santri untuk pembuatan KHS Dirosah</p>
-          <button onclick="alert('Nilai Dirosah disimpan!')" class="bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl">Simpan Semua Nilai</button>
         </div>
       </div>
 
@@ -825,7 +980,7 @@
 
   <!-- JAVASCRIPT ROLE ENGINE & INTERACTIVE CONTROLLERS -->
   <script>
-    let activeRole = 'santri';
+    let activeRole = 'ustadz';
     let cbtTimerInt = null;
     let cbtQIndex = 0;
     let cbtAnswers = {};
@@ -860,6 +1015,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
+      switchRole('ustadz');
     });
 
     // ================= MAIN ROLE SWITCHER =================
@@ -1013,8 +1169,38 @@
       lucide.createIcons();
     }
 
+    function markAllHadir() {
+      document.querySelectorAll('.u-pres-sel').forEach(sel => sel.value = 'hadir');
+      alert('Semua santri diset HADIR!');
+    }
+
     function saveUstadzAttendance() {
       alert('Presensi Kelas Dirosah berhasil disimpan oleh Ust. Dr. Abdullah!');
+    }
+
+    function approveKrsFauzi() {
+      document.getElementById('krsFauziBadge').className = 'badge badge-lunas';
+      document.getElementById('krsFauziBadge').innerText = 'DISETUJUI';
+      alert('KRS Dirosah Ahmad Fauzi berhasil disetujui oleh Ustadz!');
+    }
+
+    function rejectKrsFauzi() {
+      document.getElementById('krsFauziBadge').className = 'badge badge-belum';
+      document.getElementById('krsFauziBadge').innerText = 'PERLU REVISI';
+      alert('KRS Ahmad Fauzi diminta untuk direvisi.');
+    }
+
+    function saveKhsScores() {
+      const f = parseFloat(document.getElementById('fauziFormatif').value) || 0;
+      const c = parseFloat(document.getElementById('fauziCbt').value) || 0;
+      const total = (f * 0.4) + (c * 0.6);
+      
+      let grade = 'A';
+      if (total < 70) grade = 'C';
+      else if (total < 85) grade = 'B';
+
+      document.getElementById('fauziNilaiAkhir').innerText = `${total.toFixed(2)} (${grade})`;
+      alert(`Nilai KHS & Kalkulasi IPD Berhasil Disimpan!\nNilai Akhir Ahmad Fauzi: ${total.toFixed(2)} (${grade})`);
     }
 
     function saveNewExam(e) {
